@@ -1,0 +1,252 @@
+module vector_shift_unit
+
+import dragonfang_pkg::*;
+
+(
+	input 	logic 				clock,
+	input 	logic 				reset_n,
+	input 	execution_vector_t 	execution_vector,
+	
+	input 	logic [63:0] 		vs2,
+	input 	logic [63:0] 		vs1,	// Shift amount vector.
+	
+	output 	logic [63:0]		vd_bypass,
+	output 	logic [63:0] 		vd_low
+);
+
+	execution_vector_t 	execution_vector_ff_0;
+	logic [63:0] 		vs2_ff_0;
+	logic [63:0] 		vs1_ff_0;
+
+	logic [63:0]		vd_low_bus;
+	logic [63:0]		vd_low_aux;
+	
+	assign vd_bypass = vd_low_bus;
+	
+	// Manage inter-stage flip-flop's.
+	always_ff @ (posedge clock, negedge reset_n)
+		if (!reset_n)
+			begin
+				execution_vector_ff_0 	<= '0;
+				vs2_ff_0				<= '0;
+				vs1_ff_0				<= '0;
+				
+				vd_low						<= '0;
+			end
+			
+		else
+			begin
+				execution_vector_ff_0 	<= execution_vector;
+				vs2_ff_0				<= vs2;
+				vs1_ff_0				<= vs1;
+				
+				vd_low						<= vd_low_bus;
+			end
+	
+	always_comb
+		case (execution_vector_ff_0.bit_mode)
+			ENABLED_64BIT_MODE 	:
+				case (execution_vector_ff_0.shift_mode)
+					ENABLED_SHIFT_LEFT_LOGICAL_MODE 	:
+						begin
+							vd_low_bus = vs2_ff_0 << vs1_ff_0[5:0];
+							vd_low_aux = '0;
+						end
+					
+					ENABLED_SHIFT_RIGHT_LOGICAL_MODE 	: // Narrowing is supported.
+						if (execution_vector_ff_0.narrowing_mode == ENABLED_NARROWING_MODE)
+							begin
+								vd_low_aux = vs2_ff_0 >> vs1_ff_0[5:0];
+								vd_low_bus = {{32{1'b0}}, vd_low_aux[63:32]};
+							end
+							
+						else
+							begin
+								vd_low_bus = vs2_ff_0 >> vs1_ff_0[5:0];
+								vd_low_aux = '0;
+							end
+							
+					ENABLED_SHIFT_RIGHT_ARITHMETIC_MODE : // Narrowing is supported.
+						if (execution_vector_ff_0.narrowing_mode == ENABLED_NARROWING_MODE)
+							begin
+								vd_low_aux = vs2_ff_0 >>> vs1_ff_0[5:0];
+								vd_low_bus = {{32{vd_low_aux[63]}}, vd_low_aux[63:32]};
+							end
+							
+						else
+							begin
+								vd_low_bus = vs2_ff_0 >>> vs1_ff_0[5:0];
+								vd_low_aux = '0;
+							end
+					
+					default								:
+						begin
+							vd_low_bus = '0;
+							vd_low_aux = '0;
+						end
+				endcase
+			
+			ENABLED_32BIT_MODE 	:
+				case (execution_vector_ff_0.shift_mode)
+					ENABLED_SHIFT_LEFT_LOGICAL_MODE 	:
+						begin
+							vd_low_bus[31:0] 	= vs2_ff_0[31:0] << vs1_ff_0[4:0];
+							vd_low_bus[63:32] 	= vs2_ff_0[63:32] << vs1_ff_0[36:32];
+							vd_low_aux = '0;
+						end
+					
+					ENABLED_SHIFT_RIGHT_LOGICAL_MODE 	:
+						if (execution_vector_ff_0.narrowing_mode == ENABLED_NARROWING_MODE)
+							begin
+								vd_low_aux[31:0] 	= vs2_ff_0[31:0] >> vs1_ff_0[4:0];
+								vd_low_aux[63:32] 	= vs2_ff_0[63:32] >> vs1_ff_0[36:32];
+								
+								vd_low_bus[31:0] 	= {{16{1'b0}}, vd_low_aux[31:16]};
+								vd_low_bus[63:32] 	= {{16{1'b0}}, vd_low_aux[63:48]};
+							end
+							
+						else
+							begin
+								vd_low_bus[31:0] 	= vs2_ff_0[31:0] >> vs1_ff_0[4:0];
+								vd_low_bus[63:32] 	= vs2_ff_0[63:32] >> vs1_ff_0[36:32];
+								vd_low_aux = '0;
+							end
+					
+					ENABLED_SHIFT_RIGHT_ARITHMETIC_MODE :
+						if (execution_vector_ff_0.narrowing_mode == ENABLED_NARROWING_MODE)
+							begin
+								vd_low_aux[31:0] 	= vs2_ff_0[31:0] >>> vs1_ff_0[4:0];
+								vd_low_aux[63:32] 	= vs2_ff_0[63:32] >>> vs1_ff_0[36:32];
+								
+								vd_low_bus[31:0] 	= {{16{vd_low_aux[31]}}, vd_low_aux[31:16]};
+								vd_low_bus[63:32] 	= {{16{vd_low_aux[63]}}, vd_low_aux[63:48]};
+							end
+							
+						else
+							begin
+								vd_low_bus[31:0] 	= vs2_ff_0[31:0] >>> vs1_ff_0[4:0];
+								vd_low_bus[63:32] 	= vs2_ff_0[63:32] >>> vs1_ff_0[36:32];
+								vd_low_aux = '0;
+							end
+					
+					default								:
+						begin
+							vd_low_bus = '0;
+							vd_low_aux = '0;
+						end
+				endcase
+			
+			ENABLED_16BIT_MODE 	:
+				case (execution_vector_ff_0.shift_mode)
+					ENABLED_SHIFT_LEFT_LOGICAL_MODE 	:
+						begin
+							vd_low_bus [15:0] 	= vs2_ff_0[15:0] << vs1_ff_0 [3:0];
+							vd_low_bus [31:16] 	= vs2_ff_0[31:16] << vs1_ff_0 [19:16];
+							vd_low_bus [47:32] 	= vs2_ff_0[47:32] << vs1_ff_0 [35:32];
+							vd_low_bus [63:48] 	= vs2_ff_0[63:48] << vs1_ff_0 [51:48];
+							vd_low_aux = '0;
+						end
+					
+					ENABLED_SHIFT_RIGHT_LOGICAL_MODE 	:
+						if (execution_vector_ff_0.narrowing_mode == ENABLED_NARROWING_MODE)
+							begin
+								vd_low_aux [15:0] 	= vs2_ff_0[15:0] >> vs1_ff_0 [3:0];
+								vd_low_aux [31:16] 	= vs2_ff_0[31:16] >> vs1_ff_0 [19:16];
+								vd_low_aux [47:32] 	= vs2_ff_0[47:32] >> vs1_ff_0 [35:32];
+								vd_low_aux [63:48] 	= vs2_ff_0[63:48] >> vs1_ff_0 [51:48];
+								
+								vd_low_bus [15:0] 	= {{8{1'b0}}, vd_low_aux[15:8]};
+								vd_low_bus [31:16] 	= {{8{1'b0}}, vd_low_aux[31:24]};
+								vd_low_bus [47:32] 	= {{8{1'b0}}, vd_low_aux[47:40]};
+								vd_low_bus [63:48] 	= {{8{1'b0}}, vd_low_aux[63:56]};
+							end
+							
+						else
+							begin
+								vd_low_bus [15:0] 	= vs2_ff_0[15:0] >> vs1_ff_0 [3:0];
+								vd_low_bus [31:16] 	= vs2_ff_0[31:16] >> vs1_ff_0 [19:16];
+								vd_low_bus [47:32] 	= vs2_ff_0[47:32] >> vs1_ff_0 [35:32];
+								vd_low_bus [63:48] 	= vs2_ff_0[63:48] >> vs1_ff_0 [51:48];
+								vd_low_aux = '0;
+							end
+					
+					ENABLED_SHIFT_RIGHT_ARITHMETIC_MODE :
+						if (execution_vector_ff_0.narrowing_mode == ENABLED_NARROWING_MODE)
+							begin
+								vd_low_aux [15:0] 	= vs2_ff_0[15:0] >>> vs1_ff_0 [3:0];
+								vd_low_aux [31:16] 	= vs2_ff_0[31:16] >>> vs1_ff_0 [19:16];
+								vd_low_aux [47:32] 	= vs2_ff_0[47:32] >>> vs1_ff_0 [35:32];
+								vd_low_aux [63:48] 	= vs2_ff_0[63:48] >>> vs1_ff_0 [51:48];
+								
+								vd_low_bus [15:0] 	= {{8{vd_low_aux[15]}}, vd_low_aux[15:8]};
+								vd_low_bus [31:16] 	= {{8{vd_low_aux[31]}}, vd_low_aux[31:24]};
+								vd_low_bus [47:32] 	= {{8{vd_low_aux[47]}}, vd_low_aux[47:40]};
+								vd_low_bus [63:48] 	= {{8{vd_low_aux[63]}}, vd_low_aux[63:56]};
+							end
+							
+						else
+							begin
+								vd_low_bus [15:0] 	= vs2_ff_0[15:0] >>> vs1_ff_0 [3:0];
+								vd_low_bus [31:16] 	= vs2_ff_0[31:16] >>> vs1_ff_0 [19:16];
+								vd_low_bus [47:32] 	= vs2_ff_0[47:32] >>> vs1_ff_0 [35:32];
+								vd_low_bus [63:48] 	= vs2_ff_0[63:48] >>> vs1_ff_0 [51:48];
+								vd_low_aux = '0;
+							end
+					
+					default								:
+						begin
+							vd_low_bus = '0;
+							vd_low_aux = '0;
+						end
+				endcase
+				
+			ENABLED_8BIT_MODE 	:
+				case (execution_vector_ff_0.shift_mode)
+					ENABLED_SHIFT_LEFT_LOGICAL_MODE 	:
+						begin
+							vd_low_bus[7:0] 	= vs2_ff_0[7:0] << vs1_ff_0[2:0];
+							vd_low_bus[15:8] 	= vs2_ff_0[15:8] << vs1_ff_0[10:8];
+							vd_low_bus[23:16] 	= vs2_ff_0[23:16] << vs1_ff_0[18:16];
+							vd_low_bus[31:24] 	= vs2_ff_0[31:24] << vs1_ff_0[26:24];
+							vd_low_bus[39:32] 	= vs2_ff_0[39:32] << vs1_ff_0[34:32];
+							vd_low_bus[47:40] 	= vs2_ff_0[47:40] << vs1_ff_0[42:40];
+							vd_low_bus[55:48] 	= vs2_ff_0[55:48] << vs1_ff_0[50:48];
+							vd_low_bus[63:56] 	= vs2_ff_0[63:56] << vs1_ff_0[58:56];
+							vd_low_aux = '0;
+						end
+					
+					ENABLED_SHIFT_RIGHT_LOGICAL_MODE 	:
+						begin
+							vd_low_bus[7:0] 	= vs2_ff_0[7:0] >> vs1_ff_0[2:0];
+							vd_low_bus[15:8] 	= vs2_ff_0[15:8] >> vs1_ff_0[10:8];
+							vd_low_bus[23:16] 	= vs2_ff_0[23:16] >> vs1_ff_0[18:16];
+							vd_low_bus[31:24] 	= vs2_ff_0[31:24] >> vs1_ff_0[26:24];
+							vd_low_bus[39:32] 	= vs2_ff_0[39:32] >> vs1_ff_0[34:32];
+							vd_low_bus[47:40] 	= vs2_ff_0[47:40] >> vs1_ff_0[42:40];
+							vd_low_bus[55:48] 	= vs2_ff_0[55:48] >> vs1_ff_0[50:48];
+							vd_low_bus[63:56] 	= vs2_ff_0[63:56] >> vs1_ff_0[58:56];
+							vd_low_aux = '0;
+						end
+					
+					ENABLED_SHIFT_RIGHT_ARITHMETIC_MODE :
+						begin
+							vd_low_bus[7:0] 	= vs2_ff_0[7:0] >>> vs1_ff_0[2:0];
+							vd_low_bus[15:8] 	= vs2_ff_0[15:8] >>> vs1_ff_0[10:8];
+							vd_low_bus[23:16] 	= vs2_ff_0[23:16] >>> vs1_ff_0[18:16];
+							vd_low_bus[31:24] 	= vs2_ff_0[31:24] >>> vs1_ff_0[26:24];
+							vd_low_bus[39:32] 	= vs2_ff_0[39:32] >>> vs1_ff_0[34:32];
+							vd_low_bus[47:40] 	= vs2_ff_0[47:40] >>> vs1_ff_0[42:40];
+							vd_low_bus[55:48] 	= vs2_ff_0[55:48] >>> vs1_ff_0[50:48];
+							vd_low_bus[63:56] 	= vs2_ff_0[63:56] >>> vs1_ff_0[58:56];
+							vd_low_aux = '0;
+						end
+					
+					default 							:
+						begin
+							vd_low_bus = '0;
+							vd_low_aux = '0;
+						end
+				endcase
+		endcase
+	
+endmodule 

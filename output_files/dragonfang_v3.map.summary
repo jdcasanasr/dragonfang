@@ -1,0 +1,14 @@
+Analysis & Synthesis Status : Successful - Sun May 29 21:10:07 2022
+Quartus Prime Version : 21.1.0 Build 842 10/21/2021 SJ Lite Edition
+Revision Name : dragonfang_v3
+Top-level Entity Name : vector_extension_unit
+Family : Cyclone IV E
+Total logic elements : 487
+    Total combinational functions : 487
+    Dedicated logic registers : 0
+Total registers : 0
+Total pins : 614
+Total virtual pins : 0
+Total memory bits : 0
+Embedded Multiplier 9-bit elements : 0
+Total PLLs : 0

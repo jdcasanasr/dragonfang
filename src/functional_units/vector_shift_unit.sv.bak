@@ -1,0 +1,257 @@
+module vector_shift_unit
+(
+	input 	logic 			clock,
+	input 	logic 			reset_n,
+	input 	logic [2:0] 	property_vector,
+	input 	logic [1:0] 	control_vector,
+	input 	logic [63:0] 	source_vector,
+	input	logic [63:0]	shift_amount_vector,
+	
+	output 	logic [63:0] 	target_vector
+);
+
+	logic [1:0] 	control_vector_a_latch;
+	logic [2:0] 	property_vector_a_latch;
+	logic [63:0] 	source_vector_latch;
+	logic [63:0] 	shift_amount_vector_latch;
+	
+	logic [1:0]		control_vector_b_latch;
+	logic			property_vector_b_latch;
+	logic [63:0]	shift_64_bus_latch;
+	logic [63:0]	shift_32_bus_latch;
+	logic [63:0]	shift_16_bus_latch;
+	logic [63:0]	shift_8_bus_a_latch;
+	
+	logic [1:0]		control_vector_c_latch;
+	logic [63:0]	mux_64_bus_latch;
+	logic [63:0]	mux_32_bus_latch;
+	logic [63:0]	mux_16_bus_latch;
+	logic [63:0]	shift_8_bus_b_latch;
+	
+	logic [63:0]	shift_64_bus;
+	logic [63:0]	shift_32_bus;
+	logic [63:0]	shift_16_bus;
+	logic [63:0]	shift_8_bus;
+	
+	logic [63:0]	mux_64_bus;
+	logic [63:0]	mux_32_bus;
+	logic [63:0]	mux_16_bus;
+
+	always_ff @ (posedge clock, negedge reset_n)
+		if (!reset_n)
+			begin
+				control_vector_a_latch 		<= '0;
+				property_vector_a_latch 	<= '0;
+				source_vector_latch 		<= '0;
+				shift_amount_vector_latch 	<= '0;
+				
+				control_vector_b_latch 		<= '0;
+				property_vector_b_latch 	<= '0;
+				shift_64_bus_latch			<= '0;
+				shift_32_bus_latch 			<= '0;
+				shift_16_bus_latch 			<= '0;
+				shift_8_bus_a_latch 		<= '0;
+				
+				control_vector_c_latch 		<= '0;
+				mux_64_bus_latch 			<= '0;
+				mux_32_bus_latch 			<= '0;
+				mux_16_bus_latch 			<= '0;
+				shift_8_bus_b_latch 		<= '0;
+			end
+			
+		else
+			begin
+				control_vector_a_latch 		<= control_vector;
+				property_vector_a_latch 	<= property_vector;
+				source_vector_latch 		<= source_vector;
+				shift_amount_vector_latch 	<= shift_amount_vector;
+				
+				control_vector_b_latch 		<= control_vector_a_latch;
+				property_vector_b_latch 	<= property_vector_a_latch[2];
+				shift_64_bus_latch			<= shift_64_bus;
+				shift_32_bus_latch 			<= shift_32_bus;
+				shift_16_bus_latch 			<= shift_16_bus;
+				shift_8_bus_a_latch 		<= shift_8_bus;
+				
+				control_vector_c_latch 		<= control_vector_b_latch;
+				mux_64_bus_latch 			<= mux_64_bus;
+				mux_32_bus_latch 			<= mux_32_bus;
+				mux_16_bus_latch 			<= mux_16_bus;
+				shift_8_bus_b_latch 		<= shift_8_bus_a_latch;
+			end
+	
+	always_comb
+		if (property_vector_b_latch)
+			mux_64_bus = {{32{1'b0}}, shift_64_bus_latch[31:0]};
+			
+		else
+			mux_64_bus = shift_64_bus_latch;
+			
+	always_comb
+		if (property_vector_b_latch)
+			begin
+				mux_32_bus[31:0] 	= {{16{1'b0}}, shift_32_bus_latch[15:0]};
+				mux_32_bus[63:32] 	= {{16{1'b0}}, shift_32_bus_latch[47:32]};
+			end
+			
+		else
+			mux_32_bus = shift_32_bus_latch;
+			
+	always_comb
+		if (property_vector_b_latch)
+			begin
+				mux_16_bus[15:0]	= {{8{1'b0}}, shift_16_bus_latch[7:0]};
+				mux_16_bus[31:16]	= {{8{1'b0}}, shift_16_bus_latch[23:16]};
+				mux_16_bus[47:32]	= {{8{1'b0}}, shift_16_bus_latch[39:32]};
+				mux_16_bus[63:48]	= {{8{1'b0}}, shift_16_bus_latch[55:48]};
+			end
+			
+		else
+			mux_16_bus = shift_16_bus_latch;
+			
+	always_comb
+		case (control_vector_c_latch)
+			2'b00 	: target_vector = mux_64_bus_latch;
+			2'b01 	: target_vector = mux_32_bus_latch;
+			2'b10 	: target_vector = mux_16_bus_latch;
+			2'b11 	: target_vector = shift_8_bus_b_latch;
+			
+			default : target_vector = '0;
+		endcase
+	
+	shift_64 shift_64_0
+	(
+		.shift_type 	(property_vector_a_latch[1:0]),
+		.shift_amount 	(shift_amount_vector_latch[5:0]),
+		.source_element (source_vector_latch),
+		
+		.target_element (shift_64_bus)
+	);
+	
+	shift_32 shift_32_0
+	(
+		.shift_type 	(property_vector_a_latch[1:0]),
+		.shift_amount 	(shift_amount_vector_latch[4:0]),
+		.source_element (source_vector_latch[31:0]),
+		
+		.target_element (shift_32_bus[31:0])
+	);
+	
+	shift_32 shift_32_1
+	(
+		.shift_type 	(property_vector_a_latch[1:0]),
+		.shift_amount 	(shift_amount_vector_latch[36:32]),
+		.source_element (source_vector_latch[63:32]),
+		
+		.target_element (shift_32_bus[63:32])
+	);
+	
+	shift_16 shift_16_0
+	(
+		.shift_type 	(property_vector_a_latch[1:0]),
+		.shift_amount 	(shift_amount_vector_latch[3:0]),
+		.source_element (source_vector_latch[15:0]),
+		
+		.target_element (shift_16_bus[15:0])
+	);
+	
+	shift_16 shift_16_1
+	(
+		.shift_type 	(property_vector_a_latch[1:0]),
+		.shift_amount 	(shift_amount_vector_latch[19:16]),
+		.source_element (source_vector_latch[31:16]),
+		
+		.target_element (shift_16_bus[31:16])
+	);
+	
+	shift_16 shift_16_2
+	(
+		.shift_type 	(property_vector_a_latch[1:0]),
+		.shift_amount 	(shift_amount_vector_latch[35:32]),
+		.source_element (source_vector_latch[47:32]),
+		
+		.target_element (shift_16_bus[47:32])
+	);
+	
+	shift_16 shift_16_3
+	(
+		.shift_type 	(property_vector_a_latch[1:0]),
+		.shift_amount 	(shift_amount_vector_latch[51:48]),
+		.source_element (source_vector_latch[63:48]),
+		
+		.target_element (shift_16_bus[63:48])
+	);
+	
+	shift_8 shift_8_0
+	(
+		.shift_type 	(property_vector_a_latch[1:0]),
+		.shift_amount 	(shift_amount_vector_latch[2:0]),
+		.source_element (source_vector_latch[7:0]),
+		
+		.target_element (shift_8_bus[7:0])
+	);
+	
+	shift_8 shift_8_1
+	(
+		.shift_type 	(property_vector_a_latch[1:0]),
+		.shift_amount 	(shift_amount_vector_latch[10:8]),
+		.source_element (source_vector_latch[15:8]),
+		
+		.target_element (shift_8_bus[15:8])
+	);
+	
+	shift_8 shift_8_2
+	(
+		.shift_type 	(property_vector_a_latch[1:0]),
+		.shift_amount 	(shift_amount_vector_latch[18:16]),
+		.source_element (source_vector_latch[23:16]),
+		
+		.target_element (shift_8_bus[23:16])
+	);
+	
+	shift_8 shift_8_3
+	(
+		.shift_type 	(property_vector_a_latch[1:0]),
+		.shift_amount 	(shift_amount_vector_latch[26:24]),
+		.source_element (source_vector_latch[31:24]),
+		
+		.target_element (shift_8_bus[31:24])
+	);
+	
+	shift_8 shift_8_4
+	(
+		.shift_type 	(property_vector_a_latch[1:0]),
+		.shift_amount 	(shift_amount_vector_latch[34:32]),
+		.source_element (source_vector_latch[39:32]),
+		
+		.target_element (shift_8_bus[39:32])
+	);
+	
+	shift_8 shift_8_5
+	(
+		.shift_type 	(property_vector_a_latch[1:0]),
+		.shift_amount 	(shift_amount_vector_latch[42:40]),
+		.source_element (source_vector_latch[47:40]),
+		
+		.target_element (shift_8_bus[47:40])
+	);
+	
+	shift_8 shift_8_6
+	(
+		.shift_type 	(property_vector_a_latch[1:0]),
+		.shift_amount 	(shift_amount_vector_latch[50:48]),
+		.source_element (source_vector_latch[55:48]),
+		
+		.target_element (shift_8_bus[55:48])
+	);
+	
+	shift_8 shift_8_7
+	(
+		.shift_type 	(property_vector_a_latch[1:0]),
+		.shift_amount 	(shift_amount_vector_latch[58:56]),
+		.source_element (source_vector_latch[63:56]),
+		
+		.target_element (shift_8_bus[63:56])
+	);
+	
+endmodule 

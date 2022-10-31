@@ -1,0 +1,476 @@
+Analysis & Synthesis report for dragonfang_v3
+Sun May 29 21:10:07 2022
+Quartus Prime Version 21.1.0 Build 842 10/21/2021 SJ Lite Edition
+
+
+---------------------
+; Table of Contents ;
+---------------------
+  1. Legal Notice
+  2. Analysis & Synthesis Summary
+  3. Analysis & Synthesis Settings
+  4. Parallel Compilation
+  5. Analysis & Synthesis Source Files Read
+  6. Analysis & Synthesis Resource Usage Summary
+  7. Analysis & Synthesis Resource Utilization by Entity
+  8. General Register Statistics
+  9. Multiplexer Restructuring Statistics (Restructuring Performed)
+ 10. Post-Synthesis Netlist Statistics for Top Partition
+ 11. Elapsed Time Per Partition
+ 12. Analysis & Synthesis Messages
+
+
+
+----------------
+; Legal Notice ;
+----------------
+Copyright (C) 2021  Intel Corporation. All rights reserved.
+Your use of Intel Corporation's design tools, logic functions 
+and other software and tools, and any partner logic 
+functions, and any output files from any of the foregoing 
+(including device programming or simulation files), and any 
+associated documentation or information are expressly subject 
+to the terms and conditions of the Intel Program License 
+Subscription Agreement, the Intel Quartus Prime License Agreement,
+the Intel FPGA IP License Agreement, or other applicable license
+agreement, including, without limitation, that your use is for
+the sole purpose of programming logic devices manufactured by
+Intel and sold by Intel or its authorized distributors.  Please
+refer to the applicable agreement for further details, at
+https://fpgasoftware.intel.com/eula.
+
+
+
++----------------------------------------------------------------------------------+
+; Analysis & Synthesis Summary                                                     ;
++------------------------------------+---------------------------------------------+
+; Analysis & Synthesis Status        ; Successful - Sun May 29 21:10:07 2022       ;
+; Quartus Prime Version              ; 21.1.0 Build 842 10/21/2021 SJ Lite Edition ;
+; Revision Name                      ; dragonfang_v3                               ;
+; Top-level Entity Name              ; vector_extension_unit                       ;
+; Family                             ; Cyclone IV E                                ;
+; Total logic elements               ; 487                                         ;
+;     Total combinational functions  ; 487                                         ;
+;     Dedicated logic registers      ; 0                                           ;
+; Total registers                    ; 0                                           ;
+; Total pins                         ; 614                                         ;
+; Total virtual pins                 ; 0                                           ;
+; Total memory bits                  ; 0                                           ;
+; Embedded Multiplier 9-bit elements ; 0                                           ;
+; Total PLLs                         ; 0                                           ;
++------------------------------------+---------------------------------------------+
+
+
++---------------------------------------------------------------------------------------------------------------+
+; Analysis & Synthesis Settings                                                                                 ;
++------------------------------------------------------------------+-----------------------+--------------------+
+; Option                                                           ; Setting               ; Default Value      ;
++------------------------------------------------------------------+-----------------------+--------------------+
+; Device                                                           ; EP4CE115F29C7         ;                    ;
+; Top-level entity name                                            ; vector_extension_unit ; dragonfang_v3      ;
+; Family name                                                      ; Cyclone IV E          ; Cyclone V          ;
+; Maximum processors allowed for parallel compilation              ; All                   ;                    ;
+; Verilog Show LMF Mapping Messages                                ; Off                   ;                    ;
+; Verilog Version                                                  ; SystemVerilog_2005    ; Verilog_2001       ;
+; Use smart compilation                                            ; Off                   ; Off                ;
+; Enable parallel Assembler and Timing Analyzer during compilation ; On                    ; On                 ;
+; Enable compact report table                                      ; Off                   ; Off                ;
+; Restructure Multiplexers                                         ; Auto                  ; Auto               ;
+; Create Debugging Nodes for IP Cores                              ; Off                   ; Off                ;
+; Preserve fewer node names                                        ; On                    ; On                 ;
+; Intel FPGA IP Evaluation Mode                                    ; Enable                ; Enable             ;
+; VHDL Version                                                     ; VHDL_1993             ; VHDL_1993          ;
+; State Machine Processing                                         ; Auto                  ; Auto               ;
+; Safe State Machine                                               ; Off                   ; Off                ;
+; Extract Verilog State Machines                                   ; On                    ; On                 ;
+; Extract VHDL State Machines                                      ; On                    ; On                 ;
+; Ignore Verilog initial constructs                                ; Off                   ; Off                ;
+; Iteration limit for constant Verilog loops                       ; 5000                  ; 5000               ;
+; Iteration limit for non-constant Verilog loops                   ; 250                   ; 250                ;
+; Add Pass-Through Logic to Inferred RAMs                          ; On                    ; On                 ;
+; Infer RAMs from Raw Logic                                        ; On                    ; On                 ;
+; Parallel Synthesis                                               ; On                    ; On                 ;
+; DSP Block Balancing                                              ; Auto                  ; Auto               ;
+; NOT Gate Push-Back                                               ; On                    ; On                 ;
+; Power-Up Don't Care                                              ; On                    ; On                 ;
+; Remove Redundant Logic Cells                                     ; Off                   ; Off                ;
+; Remove Duplicate Registers                                       ; On                    ; On                 ;
+; Ignore CARRY Buffers                                             ; Off                   ; Off                ;
+; Ignore CASCADE Buffers                                           ; Off                   ; Off                ;
+; Ignore GLOBAL Buffers                                            ; Off                   ; Off                ;
+; Ignore ROW GLOBAL Buffers                                        ; Off                   ; Off                ;
+; Ignore LCELL Buffers                                             ; Off                   ; Off                ;
+; Ignore SOFT Buffers                                              ; On                    ; On                 ;
+; Limit AHDL Integers to 32 Bits                                   ; Off                   ; Off                ;
+; Optimization Technique                                           ; Balanced              ; Balanced           ;
+; Carry Chain Length                                               ; 70                    ; 70                 ;
+; Auto Carry Chains                                                ; On                    ; On                 ;
+; Auto Open-Drain Pins                                             ; On                    ; On                 ;
+; Perform WYSIWYG Primitive Resynthesis                            ; Off                   ; Off                ;
+; Auto ROM Replacement                                             ; On                    ; On                 ;
+; Auto RAM Replacement                                             ; On                    ; On                 ;
+; Auto DSP Block Replacement                                       ; On                    ; On                 ;
+; Auto Shift Register Replacement                                  ; Auto                  ; Auto               ;
+; Allow Shift Register Merging across Hierarchies                  ; Auto                  ; Auto               ;
+; Auto Clock Enable Replacement                                    ; On                    ; On                 ;
+; Strict RAM Replacement                                           ; Off                   ; Off                ;
+; Allow Synchronous Control Signals                                ; On                    ; On                 ;
+; Force Use of Synchronous Clear Signals                           ; Off                   ; Off                ;
+; Auto RAM Block Balancing                                         ; On                    ; On                 ;
+; Auto RAM to Logic Cell Conversion                                ; Off                   ; Off                ;
+; Auto Resource Sharing                                            ; Off                   ; Off                ;
+; Allow Any RAM Size For Recognition                               ; Off                   ; Off                ;
+; Allow Any ROM Size For Recognition                               ; Off                   ; Off                ;
+; Allow Any Shift Register Size For Recognition                    ; Off                   ; Off                ;
+; Use LogicLock Constraints during Resource Balancing              ; On                    ; On                 ;
+; Ignore translate_off and synthesis_off directives                ; Off                   ; Off                ;
+; Timing-Driven Synthesis                                          ; On                    ; On                 ;
+; Report Parameter Settings                                        ; On                    ; On                 ;
+; Report Source Assignments                                        ; On                    ; On                 ;
+; Report Connectivity Checks                                       ; On                    ; On                 ;
+; Ignore Maximum Fan-Out Assignments                               ; Off                   ; Off                ;
+; Synchronization Register Chain Length                            ; 2                     ; 2                  ;
+; Power Optimization During Synthesis                              ; Normal compilation    ; Normal compilation ;
+; HDL message level                                                ; Level2                ; Level2             ;
+; Suppress Register Optimization Related Messages                  ; Off                   ; Off                ;
+; Number of Removed Registers Reported in Synthesis Report         ; 5000                  ; 5000               ;
+; Number of Swept Nodes Reported in Synthesis Report               ; 5000                  ; 5000               ;
+; Number of Inverted Registers Reported in Synthesis Report        ; 100                   ; 100                ;
+; Clock MUX Protection                                             ; On                    ; On                 ;
+; Auto Gated Clock Conversion                                      ; Off                   ; Off                ;
+; Block Design Naming                                              ; Auto                  ; Auto               ;
+; SDC constraint protection                                        ; Off                   ; Off                ;
+; Synthesis Effort                                                 ; Auto                  ; Auto               ;
+; Shift Register Replacement - Allow Asynchronous Clear Signal     ; On                    ; On                 ;
+; Pre-Mapping Resynthesis Optimization                             ; Off                   ; Off                ;
+; Analysis & Synthesis Message Level                               ; Medium                ; Medium             ;
+; Disable Register Merging Across Hierarchies                      ; Auto                  ; Auto               ;
+; Resource Aware Inference For Block RAM                           ; On                    ; On                 ;
++------------------------------------------------------------------+-----------------------+--------------------+
+
+
++------------------------------------------+
+; Parallel Compilation                     ;
++----------------------------+-------------+
+; Processors                 ; Number      ;
++----------------------------+-------------+
+; Number detected on machine ; 12          ;
+; Maximum allowed            ; 6           ;
+;                            ;             ;
+; Average used               ; 1.00        ;
+; Maximum used               ; 1           ;
+;                            ;             ;
+; Usage by Processor         ; % Time Used ;
+;     Processor 1            ; 100.0%      ;
++----------------------------+-------------+
+
+
++---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Analysis & Synthesis Source Files Read                                                                                                                                                                                          ;
++-------------------------------------------------------+-----------------+------------------------------+--------------------------------------------------------------------------------------------------------------+---------+
+; File Name with User-Entered Path                      ; Used in Netlist ; File Type                    ; File Name with Absolute Path                                                                                 ; Library ;
++-------------------------------------------------------+-----------------+------------------------------+--------------------------------------------------------------------------------------------------------------+---------+
+; src/functional_units/integer/vector_extension_unit.sv ; yes             ; User SystemVerilog HDL File  ; C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_extension_unit.sv ;         ;
+; src/packages/dragonfang_pkg.sv                        ; yes             ; User SystemVerilog HDL File  ; C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/packages/dragonfang_pkg.sv                        ;         ;
+; src/packages/riscv_v_pkg.sv                           ; yes             ; User SystemVerilog HDL File  ; C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/packages/riscv_v_pkg.sv                           ;         ;
++-------------------------------------------------------+-----------------+------------------------------+--------------------------------------------------------------------------------------------------------------+---------+
+
+
++--------------------------------------------------------+
+; Analysis & Synthesis Resource Usage Summary            ;
++---------------------------------------------+----------+
+; Resource                                    ; Usage    ;
++---------------------------------------------+----------+
+; Estimated Total logic elements              ; 487      ;
+;                                             ;          ;
+; Total combinational functions               ; 487      ;
+; Logic element usage by number of LUT inputs ;          ;
+;     -- 4 input functions                    ; 323      ;
+;     -- 3 input functions                    ; 112      ;
+;     -- <=2 input functions                  ; 52       ;
+;                                             ;          ;
+; Logic elements by mode                      ;          ;
+;     -- normal mode                          ; 487      ;
+;     -- arithmetic mode                      ; 0        ;
+;                                             ;          ;
+; Total registers                             ; 0        ;
+;     -- Dedicated logic registers            ; 0        ;
+;     -- I/O registers                        ; 0        ;
+;                                             ;          ;
+; I/O pins                                    ; 614      ;
+;                                             ;          ;
+; Embedded Multiplier 9-bit elements          ; 0        ;
+;                                             ;          ;
+; Maximum fan-out node                        ; Equal2~1 ;
+; Maximum fan-out                             ; 78       ;
+; Total fan-out                               ; 2858     ;
+; Average fan-out                             ; 1.67     ;
++---------------------------------------------+----------+
+
+
++-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Analysis & Synthesis Resource Utilization by Entity                                                                                                                                                                   ;
++----------------------------+---------------------+---------------------------+-------------+--------------+---------+-----------+------+--------------+------------------------+-----------------------+--------------+
+; Compilation Hierarchy Node ; Combinational ALUTs ; Dedicated Logic Registers ; Memory Bits ; DSP Elements ; DSP 9x9 ; DSP 18x18 ; Pins ; Virtual Pins ; Full Hierarchy Name    ; Entity Name           ; Library Name ;
++----------------------------+---------------------+---------------------------+-------------+--------------+---------+-----------+------+--------------+------------------------+-----------------------+--------------+
+; |vector_extension_unit     ; 487 (487)           ; 0 (0)                     ; 0           ; 0            ; 0       ; 0         ; 614  ; 0            ; |vector_extension_unit ; vector_extension_unit ; work         ;
++----------------------------+---------------------+---------------------------+-------------+--------------+---------+-----------+------+--------------+------------------------+-----------------------+--------------+
+Note: For table entries with two numbers listed, the numbers in parentheses indicate the number of resources of the given type used by the specific entity alone. The numbers listed outside of parentheses indicate the total resources of the given type used by the specific entity and all of its sub-entities in the hierarchy.
+
+
++------------------------------------------------------+
+; General Register Statistics                          ;
++----------------------------------------------+-------+
+; Statistic                                    ; Value ;
++----------------------------------------------+-------+
+; Total registers                              ; 0     ;
+; Number of registers using Synchronous Clear  ; 0     ;
+; Number of registers using Synchronous Load   ; 0     ;
+; Number of registers using Asynchronous Clear ; 0     ;
+; Number of registers using Asynchronous Load  ; 0     ;
+; Number of registers using Clock Enable       ; 0     ;
+; Number of registers using Preset             ; 0     ;
++----------------------------------------------+-------+
+
+
++--------------------------------------------------------------------------------------------------------------------------------------------------+
+; Multiplexer Restructuring Statistics (Restructuring Performed)                                                                                   ;
++--------------------+-----------+---------------+----------------------+------------------------+------------+------------------------------------+
+; Multiplexer Inputs ; Bus Width ; Baseline Area ; Area if Restructured ; Saving if Restructured ; Registered ; Example Multiplexer Output         ;
++--------------------+-----------+---------------+----------------------+------------------------+------------+------------------------------------+
+; 3:1                ; 4 bits    ; 8 LEs         ; 4 LEs                ; 4 LEs                  ; No         ; |vector_extension_unit|vd_all_bus  ;
+; 3:1                ; 32 bits   ; 64 LEs        ; 32 LEs               ; 32 LEs                 ; No         ; |vector_extension_unit|vd_all_bus  ;
+; 5:1                ; 16 bits   ; 48 LEs        ; 48 LEs               ; 0 LEs                  ; No         ; |vector_extension_unit|Selector406 ;
+; 5:1                ; 16 bits   ; 48 LEs        ; 32 LEs               ; 16 LEs                 ; No         ; |vector_extension_unit|Selector373 ;
+; 5:1                ; 15 bits   ; 45 LEs        ; 30 LEs               ; 15 LEs                 ; No         ; |vector_extension_unit|Selector447 ;
+; 5:1                ; 32 bits   ; 96 LEs        ; 96 LEs               ; 0 LEs                  ; No         ; |vector_extension_unit|Selector426 ;
+; 6:1                ; 16 bits   ; 64 LEs        ; 48 LEs               ; 16 LEs                 ; No         ; |vector_extension_unit|Selector458 ;
+; 7:1                ; 16 bits   ; 64 LEs        ; 48 LEs               ; 16 LEs                 ; No         ; |vector_extension_unit|Selector465 ;
++--------------------+-----------+---------------+----------------------+------------------------+------------+------------------------------------+
+
+
++-----------------------------------------------------+
+; Post-Synthesis Netlist Statistics for Top Partition ;
++-----------------------+-----------------------------+
+; Type                  ; Count                       ;
++-----------------------+-----------------------------+
+; boundary_port         ; 614                         ;
+; cycloneiii_lcell_comb ; 487                         ;
+;     normal            ; 487                         ;
+;         2 data inputs ; 52                          ;
+;         3 data inputs ; 112                         ;
+;         4 data inputs ; 323                         ;
+;                       ;                             ;
+; Max LUT depth         ; 5.00                        ;
+; Average LUT depth     ; 3.90                        ;
++-----------------------+-----------------------------+
+
+
++-------------------------------+
+; Elapsed Time Per Partition    ;
++----------------+--------------+
+; Partition Name ; Elapsed Time ;
++----------------+--------------+
+; Top            ; 00:00:01     ;
++----------------+--------------+
+
+
++-------------------------------+
+; Analysis & Synthesis Messages ;
++-------------------------------+
+Info: *******************************************************************
+Info: Running Quartus Prime Analysis & Synthesis
+    Info: Version 21.1.0 Build 842 10/21/2021 SJ Lite Edition
+    Info: Processing started: Sun May 29 21:09:56 2022
+Info: Command: quartus_map --read_settings_files=on --write_settings_files=off dragonfang_v3 -c dragonfang_v3
+Info (20030): Parallel compilation is enabled and will use 6 of the 6 processors detected
+Info (12021): Found 1 design units, including 1 entities, in source file src/pipeline_stages/write_back/vector_masking_unit_v2.sv
+    Info (12023): Found entity 1: vector_masking_unit_v2 File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/pipeline_stages/write_back/vector_masking_unit_v2.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/pipeline_stages/register_read/vector_register_file.sv
+    Info (12023): Found entity 1: vector_register_file File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/pipeline_stages/register_read/vector_register_file.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/pipeline_stages/register_read/scalar_replication_unit.sv
+    Info (12023): Found entity 1: scalar_replication_unit File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/pipeline_stages/register_read/scalar_replication_unit.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/functional_units/floating_point/vector_floating_point_square_root_unit.sv
+    Info (12023): Found entity 1: vector_floating_point_square_root_unit File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/floating_point/vector_floating_point_square_root_unit.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/functional_units/floating_point/vector_floating_point_sign_injection_unit.sv
+    Info (12023): Found entity 1: vector_floating_point_sign_injection_unit File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/floating_point/vector_floating_point_sign_injection_unit.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/functional_units/floating_point/vector_floating_point_multiply_unit.sv
+    Info (12023): Found entity 1: vector_floating_point_multiply_unit File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/floating_point/vector_floating_point_multiply_unit.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/functional_units/floating_point/vector_floating_point_multiply_add_unit.sv
+    Info (12023): Found entity 1: vector_floating_point_multiply_add_unit File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/floating_point/vector_floating_point_multiply_add_unit.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/functional_units/floating_point/vector_floating_point_minmax_unit.sv
+    Info (12023): Found entity 1: vector_floating_point_minmax_unit File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/floating_point/vector_floating_point_minmax_unit.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/functional_units/floating_point/vector_floating_point_merge_unit.sv
+    Info (12023): Found entity 1: vector_floating_point_merge_unit File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/floating_point/vector_floating_point_merge_unit.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/functional_units/floating_point/vector_floating_point_divide_unit.sv
+    Info (12023): Found entity 1: vector_floating_point_divide_unit File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/floating_point/vector_floating_point_divide_unit.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/functional_units/floating_point/vector_floating_point_comparison_unit.sv
+    Info (12023): Found entity 1: vector_floating_point_comparison_unit File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/floating_point/vector_floating_point_comparison_unit.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/functional_units/floating_point/vector_floating_point_add_unit.sv
+    Info (12023): Found entity 1: vector_floating_point_add_unit File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/floating_point/vector_floating_point_add_unit.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/auxiliary_modules/leading_bits_counter.sv
+    Info (12023): Found entity 1: leading_bits_counter File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/auxiliary_modules/leading_bits_counter.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/auxiliary_modules/bit_extender.sv
+    Info (12023): Found entity 1: bit_extender File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/auxiliary_modules/bit_extender.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/auxiliary_modules/float_to_integer_converter.sv
+    Info (12023): Found entity 1: float_to_integer_converter File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/auxiliary_modules/float_to_integer_converter.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/auxiliary_modules/integer_to_float_converter.sv
+    Info (12023): Found entity 1: integer_to_float_converter File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/auxiliary_modules/integer_to_float_converter.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/auxiliary_modules/longint_to_shortreal_converter.sv
+    Info (12023): Found entity 1: longint_to_shortreal_converter File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/auxiliary_modules/longint_to_shortreal_converter.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/functional_units/floating_point/double_to_integer_converter.sv
+    Info (12023): Found entity 1: double_to_integer_converter File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/floating_point/double_to_integer_converter.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/functional_units/floating_point/vector_conversion_unit.sv
+    Info (12023): Found entity 1: vector_conversion_unit File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/floating_point/vector_conversion_unit.sv Line: 1
+Info (12021): Found 1 design units, including 0 entities, in source file src/packages/ieee_754_2019_pkg.sv
+    Info (12022): Found design unit 1: ieee_754_2019_pkg (SystemVerilog) File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/packages/ieee_754_2019_pkg.sv Line: 4
+Info (12021): Found 1 design units, including 0 entities, in source file src/packages/dragonfang_floating_point_pkg.sv
+    Info (12022): Found design unit 1: dragonfang_floating_point_pkg (SystemVerilog) File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/packages/dragonfang_floating_point_pkg.sv Line: 4
+Info (12021): Found 1 design units, including 1 entities, in source file src/functional_units/floating_point/vector_classify_unit.sv
+    Info (12023): Found entity 1: vector_classify_unit File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/floating_point/vector_classify_unit.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/functional_units/integer/vector_shift_unit.sv
+    Info (12023): Found entity 1: vector_shift_unit File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_shift_unit.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/functional_units/integer/vector_multiply_add_unit.sv
+    Info (12023): Found entity 1: vector_multiply_add_unit File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_multiply_add_unit.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/functional_units/integer/vector_minmax_unit.sv
+    Info (12023): Found entity 1: vector_minmax_unit File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_minmax_unit.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/functional_units/integer/vector_merge_unit.sv
+    Info (12023): Found entity 1: vector_merge_unit File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_merge_unit.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/functional_units/integer/vector_add_unit.sv
+    Info (12023): Found entity 1: vector_add_unit File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_add_unit.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/auxiliary_modules/white_cell.sv
+    Info (12023): Found entity 1: white_cell File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/auxiliary_modules/white_cell.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/auxiliary_modules/black_cell.sv
+    Info (12023): Found entity 1: black_cell File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/auxiliary_modules/black_cell.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/auxiliary_modules/carry_8.sv
+    Info (12023): Found entity 1: carry_8 File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/auxiliary_modules/carry_8.sv Line: 3
+Info (12021): Found 1 design units, including 1 entities, in source file src/auxiliary_modules/add_8.sv
+    Info (12023): Found entity 1: add_8 File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/auxiliary_modules/add_8.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/functional_units/integer/vector_comparison_unit.sv
+    Info (12023): Found entity 1: vector_comparison_unit File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_comparison_unit.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/functional_units/integer/vector_division_unit.sv
+    Info (12023): Found entity 1: vector_division_unit File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_division_unit.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/functional_units/integer/vector_extension_unit.sv
+    Info (12023): Found entity 1: vector_extension_unit File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_extension_unit.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/functional_units/integer/vector_logic_unit.sv
+    Info (12023): Found entity 1: vector_logic_unit File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_logic_unit.sv Line: 1
+Info (12021): Found 1 design units, including 0 entities, in source file src/packages/dragonfang_pkg.sv
+    Info (12022): Found design unit 1: dragonfang_pkg (SystemVerilog) File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/packages/dragonfang_pkg.sv Line: 3
+Info (12021): Found 1 design units, including 1 entities, in source file src/pipeline_stages/execution/selector.sv
+    Info (12023): Found entity 1: selector File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/pipeline_stages/execution/selector.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/pipeline_stages/execution/bypass_network.sv
+    Info (12023): Found entity 1: bypass_network File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/pipeline_stages/execution/bypass_network.sv Line: 1
+Info (12021): Found 1 design units, including 0 entities, in source file src/packages/riscv_v_pkg.sv
+    Info (12022): Found design unit 1: riscv_v_pkg (SystemVerilog) File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/packages/riscv_v_pkg.sv Line: 4
+Info (12021): Found 1 design units, including 1 entities, in source file src/pipeline_stages/write_back/vector_tail_encoder.sv
+    Info (12023): Found entity 1: vector_tail_encoder File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/pipeline_stages/write_back/vector_tail_encoder.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/pipeline_stages/register_read/vector_register_read.sv
+    Info (12023): Found entity 1: vector_register_read File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/pipeline_stages/register_read/vector_register_read.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/pipeline_stages/execution/vector_execution.sv
+    Info (12023): Found entity 1: vector_execution File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/pipeline_stages/execution/vector_execution.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/pipeline_stages/write_back/vector_write_back.sv
+    Info (12023): Found entity 1: vector_write_back File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/pipeline_stages/write_back/vector_write_back.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/frequency_modules/vector_logic_unit_freq.sv
+    Info (12023): Found entity 1: vector_logic_unit_freq File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/frequency_modules/vector_logic_unit_freq.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/frequency_modules/vector_shift_unit_freq.sv
+    Info (12023): Found entity 1: vector_shift_unit_freq File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/frequency_modules/vector_shift_unit_freq.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/frequency_modules/vector_multiply_add_unit_freq.sv
+    Info (12023): Found entity 1: vector_multiply_add_unit_freq File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/frequency_modules/vector_multiply_add_unit_freq.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/frequency_modules/vector_multiply_unit_freq.sv
+    Info (12023): Found entity 1: vector_multiply_unit_freq File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/frequency_modules/vector_multiply_unit_freq.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/frequency_modules/vector_minmax_unit_freq.sv
+    Info (12023): Found entity 1: vector_minmax_unit_freq File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/frequency_modules/vector_minmax_unit_freq.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/frequency_modules/vector_merge_unit_freq.sv
+    Info (12023): Found entity 1: vector_merge_unit_freq File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/frequency_modules/vector_merge_unit_freq.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/frequency_modules/vector_add_unit_freq.sv
+    Info (12023): Found entity 1: vector_add_unit_freq File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/frequency_modules/vector_add_unit_freq.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/frequency_modules/vector_comparison_unit_freq.sv
+    Info (12023): Found entity 1: vector_comparison_unit_freq File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/frequency_modules/vector_comparison_unit_freq.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/frequency_modules/vector_division_unit_freq.sv
+    Info (12023): Found entity 1: vector_division_unit_freq File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/frequency_modules/vector_division_unit_freq.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/frequency_modules/vector_extension_unit_freq.sv
+    Info (12023): Found entity 1: vector_extension_unit_freq File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/frequency_modules/vector_extension_unit_freq.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/frequency_modules/vector_floating_point_square_root_unit_freq.sv
+    Info (12023): Found entity 1: vector_floating_point_square_root_unit_freq File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/frequency_modules/vector_floating_point_square_root_unit_freq.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/frequency_modules/vector_floating_point_sign_injection_unit_freq.sv
+    Info (12023): Found entity 1: vector_floating_point_sign_injection_unit_freq File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/frequency_modules/vector_floating_point_sign_injection_unit_freq.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/frequency_modules/vector_floating_point_multiply_unit_freq.sv
+    Info (12023): Found entity 1: vector_floating_point_multiply_unit_freq File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/frequency_modules/vector_floating_point_multiply_unit_freq.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/frequency_modules/vector_floating_point_multiply_add_unit_freq.sv
+    Info (12023): Found entity 1: vector_floating_point_multiply_add_unit_freq File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/frequency_modules/vector_floating_point_multiply_add_unit_freq.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/frequency_modules/vector_floating_point_minmax_unit_freq.sv
+    Info (12023): Found entity 1: vector_floating_point_minmax_unit_freq File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/frequency_modules/vector_floating_point_minmax_unit_freq.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/frequency_modules/vector_floating_point_merge_unit_freq.sv
+    Info (12023): Found entity 1: vector_floating_point_merge_unit_freq File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/frequency_modules/vector_floating_point_merge_unit_freq.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/frequency_modules/vector_floating_point_divide_unit_freq.sv
+    Info (12023): Found entity 1: vector_floating_point_divide_unit_freq File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/frequency_modules/vector_floating_point_divide_unit_freq.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/frequency_modules/vector_floating_point_comparison_unit_freq.sv
+    Info (12023): Found entity 1: vector_floating_point_comparison_unit_freq File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/frequency_modules/vector_floating_point_comparison_unit_freq.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/frequency_modules/vector_floating_point_add_unit_freq.sv
+    Info (12023): Found entity 1: vector_floating_point_add_unit_freq File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/frequency_modules/vector_floating_point_add_unit_freq.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/frequency_modules/vector_floating_point_conversion_unit_freq.sv
+    Info (12023): Found entity 1: vector_floating_point_conversion_unit_freq File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/frequency_modules/vector_floating_point_conversion_unit_freq.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/frequency_modules/vector_floating_point_classify_unit_freq.sv
+    Info (12023): Found entity 1: vector_floating_point_classify_unit_freq File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/frequency_modules/vector_floating_point_classify_unit_freq.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/frequency_modules/vector_execution_unit_freq.sv
+    Info (12023): Found entity 1: vector_execution_unit_freq File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/frequency_modules/vector_execution_unit_freq.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/frequency_modules/vector_register_read_freq.sv
+    Info (12023): Found entity 1: vector_register_read_freq File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/frequency_modules/vector_register_read_freq.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/frequency_modules/vector_write_back_freq.sv
+    Info (12023): Found entity 1: vector_write_back_freq File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/frequency_modules/vector_write_back_freq.sv Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file src/functional_units/integer/vector_multiply_unit.sv
+    Info (12023): Found entity 1: vector_multiply_unit File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_multiply_unit.sv Line: 1
+Info (12127): Elaborating entity "vector_extension_unit" for the top level hierarchy
+Info (10264): Verilog HDL Case Statement information at vector_extension_unit.sv(26): all case item expressions in this case statement are onehot File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_extension_unit.sv Line: 26
+Info (10264): Verilog HDL Case Statement information at vector_extension_unit.sv(45): all case item expressions in this case statement are onehot File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_extension_unit.sv Line: 45
+Info (10264): Verilog HDL Case Statement information at vector_extension_unit.sv(68): all case item expressions in this case statement are onehot File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_extension_unit.sv Line: 68
+Info (10264): Verilog HDL Case Statement information at vector_extension_unit.sv(104): all case item expressions in this case statement are onehot File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_extension_unit.sv Line: 104
+Info (10264): Verilog HDL Case Statement information at vector_extension_unit.sv(127): all case item expressions in this case statement are onehot File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_extension_unit.sv Line: 127
+Info (10264): Verilog HDL Case Statement information at vector_extension_unit.sv(163): all case item expressions in this case statement are onehot File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_extension_unit.sv Line: 163
+Info (286030): Timing-Driven Synthesis is running
+Info (16010): Generating hard_block partition "hard_block:auto_generated_inst"
+    Info (16011): Adding 0 node(s), including 0 DDIO, 0 PLL, 0 transceiver and 0 LCELL
+Warning (21074): Design contains 32 input pin(s) that do not drive logic
+    Warning (15610): No output dependent on input pin "execution_vector.conversion_mode[0]" File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_extension_unit.sv Line: 6
+    Warning (15610): No output dependent on input pin "execution_vector.conversion_mode[1]" File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_extension_unit.sv Line: 6
+    Warning (15610): No output dependent on input pin "execution_vector.conversion_mode[2]" File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_extension_unit.sv Line: 6
+    Warning (15610): No output dependent on input pin "execution_vector.conversion_mode[3]" File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_extension_unit.sv Line: 6
+    Warning (15610): No output dependent on input pin "execution_vector.sign_injection_mode[0]" File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_extension_unit.sv Line: 6
+    Warning (15610): No output dependent on input pin "execution_vector.sign_injection_mode[1]" File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_extension_unit.sv Line: 6
+    Warning (15610): No output dependent on input pin "execution_vector.reciprocal_mode" File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_extension_unit.sv Line: 6
+    Warning (15610): No output dependent on input pin "execution_vector.negate_mode" File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_extension_unit.sv Line: 6
+    Warning (15610): No output dependent on input pin "execution_vector.reverse_mode" File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_extension_unit.sv Line: 6
+    Warning (15610): No output dependent on input pin "execution_vector.overwrite_mode[0]" File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_extension_unit.sv Line: 6
+    Warning (15610): No output dependent on input pin "execution_vector.overwrite_mode[1]" File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_extension_unit.sv Line: 6
+    Warning (15610): No output dependent on input pin "execution_vector.shift_mode[0]" File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_extension_unit.sv Line: 6
+    Warning (15610): No output dependent on input pin "execution_vector.shift_mode[1]" File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_extension_unit.sv Line: 6
+    Warning (15610): No output dependent on input pin "execution_vector.logic_mode[0]" File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_extension_unit.sv Line: 6
+    Warning (15610): No output dependent on input pin "execution_vector.logic_mode[1]" File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_extension_unit.sv Line: 6
+    Warning (15610): No output dependent on input pin "execution_vector.mask_mode" File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_extension_unit.sv Line: 6
+    Warning (15610): No output dependent on input pin "execution_vector.borrow_mode" File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_extension_unit.sv Line: 6
+    Warning (15610): No output dependent on input pin "execution_vector.carry_mode" File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_extension_unit.sv Line: 6
+    Warning (15610): No output dependent on input pin "execution_vector.reverse_subtraction_mode" File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_extension_unit.sv Line: 6
+    Warning (15610): No output dependent on input pin "execution_vector.subtraction_mode" File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_extension_unit.sv Line: 6
+    Warning (15610): No output dependent on input pin "execution_vector.narrowing_mode" File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_extension_unit.sv Line: 6
+    Warning (15610): No output dependent on input pin "execution_vector.widening_mode" File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_extension_unit.sv Line: 6
+    Warning (15610): No output dependent on input pin "execution_vector.remainder_mode" File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_extension_unit.sv Line: 6
+    Warning (15610): No output dependent on input pin "execution_vector.high_half_mode" File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_extension_unit.sv Line: 6
+    Warning (15610): No output dependent on input pin "execution_vector.low_half_mode" File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_extension_unit.sv Line: 6
+    Warning (15610): No output dependent on input pin "execution_vector.maximum_mode" File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_extension_unit.sv Line: 6
+    Warning (15610): No output dependent on input pin "execution_vector.minimum_mode" File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_extension_unit.sv Line: 6
+    Warning (15610): No output dependent on input pin "execution_vector.comparison_mode[0]" File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_extension_unit.sv Line: 6
+    Warning (15610): No output dependent on input pin "execution_vector.comparison_mode[1]" File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_extension_unit.sv Line: 6
+    Warning (15610): No output dependent on input pin "execution_vector.comparison_mode[2]" File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_extension_unit.sv Line: 6
+    Warning (15610): No output dependent on input pin "execution_vector.sign_mode[0]" File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_extension_unit.sv Line: 6
+    Warning (15610): No output dependent on input pin "execution_vector.sign_mode[1]" File: C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_extension_unit.sv Line: 6
+Info (21057): Implemented 1101 device resources after synthesis - the final resource count might be different
+    Info (21058): Implemented 102 input pins
+    Info (21059): Implemented 512 output pins
+    Info (21061): Implemented 487 logic cells
+Info: Quartus Prime Analysis & Synthesis was successful. 0 errors, 33 warnings
+    Info: Peak virtual memory: 4808 megabytes
+    Info: Processing ended: Sun May 29 21:10:07 2022
+    Info: Elapsed time: 00:00:11
+    Info: Total CPU time (on all processors): 00:00:23
+
+

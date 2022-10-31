@@ -1,0 +1,12 @@
+module vector_conversion_unit
+(
+	input 	logic 				clock,
+	input 	logic 				reset_n
+	input 	execution_vector_t 	execution_vector,
+	
+	input 	logic [63:0] 		vs2,
+	
+	output 	logic [63:0] 		vd_low
+);
+
+endmodule 

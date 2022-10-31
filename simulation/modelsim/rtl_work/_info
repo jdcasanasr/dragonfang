@@ -1,0 +1,155 @@
+m255
+K4
+z2
+!s99 nomlopt
+!s11f vlog 2021.2 2021.04, Apr 14 2021
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 dC:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/simulation/modelsim
+T_opt
+!s110 1653876633
+VQj;;c^`iVBD93mNnLH:mi1
+04 24 4 work vector_extension_unit_tb fast 0
+=1-00d861e20fbe-62942798-1d2-3960
+!s124 OEM10U2 
+o-quiet -auto_acc_if_foreign -work work -L altera_ver -L lpm_ver -L sgate_ver -L altera_mf_ver -L altera_lnsim_ver -L cycloneive_ver -L rtl_work -L work +acc
+Z1 tCvgOpt 0
+n@_opt
+OL;O;2021.2;73
+Xdragonfang_pkg
+Z2 DXx6 sv_std 3 std 0 22 9oUSJO;AeEaW`l:M@^WG92
+Z3 DXx4 work 11 riscv_v_pkg 0 22 NO=cCaA4aGBn6_X9`5HDW0
+Z4 !s110 1653876630
+!i10b 1
+!s100 SJRCNXjYfEnH`V5b2h`j:3
+I;XUia<M@mBh;aD>iTh24j2
+S1
+R0
+w1647372534
+8C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/packages/dragonfang_pkg.sv
+FC:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/packages/dragonfang_pkg.sv
+!i122 1
+Z5 L0 3 0
+V;XUia<M@mBh;aD>iTh24j2
+Z6 OL;L;2021.2;73
+r1
+!s85 0
+31
+Z7 !s108 1653876630.000000
+!s107 C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/packages/dragonfang_pkg.sv|
+!s90 -reportprogress|300|-sv|-work|work|+incdir+C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/packages|C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/packages/dragonfang_pkg.sv|
+!i113 0
+Z8 o-sv -work work -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+Z9 !s92 -sv -work work +incdir+C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/packages -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+R1
+Xexecution_vectors_pkg
+R2
+R3
+Z10 DXx4 work 14 dragonfang_pkg 0 22 ;XUia<M@mBh;aD>iTh24j2
+Z11 !s110 1653876631
+!i10b 1
+!s100 g??Z[fjPkl79z_Zkh7PZm1
+IZEGSlaKD`Ai`bS3YEHV7;3
+S1
+R0
+w1650158912
+8C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/packages/execution_vectors_pkg.sv
+FC:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/packages/execution_vectors_pkg.sv
+!i122 3
+R5
+VZEGSlaKD`Ai`bS3YEHV7;3
+R6
+r1
+!s85 0
+31
+R7
+Z12 !s107 C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/packages/execution_vectors_pkg.sv|C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/sim/testbenches/vector_extension_unit_tb.sv|
+Z13 !s90 -reportprogress|300|-sv|-work|work|+incdir+C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/sim/testbenches|C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/sim/testbenches/vector_extension_unit_tb.sv|
+!i113 0
+R8
+Z14 !s92 -sv -work work +incdir+C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/sim/testbenches -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+R1
+Xriscv_v_pkg
+R2
+R4
+!i10b 1
+!s100 FnmbCYFgnbanAhYoz0zk_2
+INO=cCaA4aGBn6_X9`5HDW0
+S1
+R0
+w1646956982
+8C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/packages/riscv_v_pkg.sv
+FC:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/packages/riscv_v_pkg.sv
+!i122 0
+L0 4 0
+VNO=cCaA4aGBn6_X9`5HDW0
+R6
+r1
+!s85 0
+31
+!s108 1653876629.000000
+!s107 C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/packages/riscv_v_pkg.sv|
+!s90 -reportprogress|300|-sv|-work|work|+incdir+C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/packages|C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/packages/riscv_v_pkg.sv|
+!i113 0
+R8
+R9
+R1
+vvector_extension_unit
+R2
+R3
+R10
+R4
+!i10b 1
+!s100 mZMgB^>DnEF?70FZeH8ON3
+IXcB64]8HMaHAfhNZQ85fk2
+S1
+R0
+w1646678422
+8C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_extension_unit.sv
+FC:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_extension_unit.sv
+!i122 2
+L0 1 197
+Z15 VDg1SIo80bB@j0V0VzS_@n1
+R6
+r1
+!s85 0
+31
+R7
+!s107 C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_extension_unit.sv|
+!s90 -reportprogress|300|-sv|-work|work|+incdir+C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer|C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer/vector_extension_unit.sv|
+!i113 0
+R8
+!s92 -sv -work work +incdir+C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/src/functional_units/integer -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+R1
+vvector_extension_unit_tb
+R2
+R3
+R10
+DXx4 work 21 execution_vectors_pkg 0 22 ZEGSlaKD`Ai`bS3YEHV7;3
+R11
+!i10b 1
+!s100 ;DdbgmSa0haPH>N9Amg=a0
+I@W9_1PA@blFgnDJAD:<OH0
+S1
+R0
+w1653876577
+8C:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/sim/testbenches/vector_extension_unit_tb.sv
+FC:/Users/jdani/OneDrive/Documents/Thesis/dragonfang_v3/sim/testbenches/vector_extension_unit_tb.sv
+!i122 3
+L0 4 295
+R15
+R6
+r1
+!s85 0
+31
+R7
+R12
+R13
+!i113 0
+R8
+R14
+R1

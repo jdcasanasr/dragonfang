@@ -1,0 +1,142 @@
+`timescale 1 ns / 1 ns
+`include "C:/Users/jdani/Documents/Thesis/dragonfang_v3/src/packages/execution_vectors_pkg.sv"
+
+module vector_multiply_add_unit_tb 
+
+import 	dragonfang_pkg 			:: *,
+		execution_vectors_pkg	:: *,
+		riscv_v_pkg 			:: *;
+
+();
+
+	execution_vector_t 	execution_vector;
+	
+	logic [VLEN - 1:0] 	vs2;
+	logic [VLEN - 1:0] 	vs1;
+	logic [VLEN - 1:0] 	vdd;
+	
+	logic [VLEN - 1:0] 	vd;
+	
+	string 				current_instruction;
+	
+	initial
+		begin
+			execution_vector 	= '0;
+			
+			vs2 				= '0;
+			vs1 				= '0;
+			vdd 				= '0;
+			
+			current_instruction = "NULL";
+		end
+	
+	always
+		begin
+			// vmacc.v*
+			#20 current_instruction = "vmacc.v* @ 64";
+				execution_vector 	= vmacc_64;
+				vs2 				= {$random, $random};
+				vs1 				= {$random, $random};
+				vdd 				= {$random, $random};
+				
+			#20 current_instruction = "vmacc.v* @ 32";
+				execution_vector 	= vmacc_32;
+				vs2 				= {$random, $random};
+				vs1 				= {$random, $random};
+				vdd 				= {$random, $random};
+				
+			#20 current_instruction = "vmacc.v* @ 16";
+				execution_vector 	= vmacc_16;
+				vs2 				= {$random, $random};
+				vs1 				= {$random, $random};
+				vdd 				= {$random, $random};
+				
+			#20 current_instruction = "vmacc.v* @ 8";
+				execution_vector 	= vmacc_8;
+				vs2 				= {$random, $random};
+				vs1 				= {$random, $random};
+				vdd 				= {$random, $random};
+			
+			// vmadd.v*
+			#20 current_instruction = "vmadd.v* @ 64";
+				execution_vector 	= vmadd_64;
+				vs2 				= {$random, $random};
+				vs1 				= {$random, $random};
+				vdd 				= {$random, $random};
+				
+			#20 current_instruction = "vmadd.v* @ 32";
+				execution_vector 	= vmadd_32;
+				vs2 				= {$random, $random};
+				vs1 				= {$random, $random};
+				vdd 				= {$random, $random};
+				
+			#20 current_instruction = "vmadd.v* @ 16";
+				execution_vector 	= vmadd_16;
+				vs2 				= {$random, $random};
+				vs1 				= {$random, $random};
+				vdd 				= {$random, $random};
+				
+			#20 current_instruction = "vmadd.v* @ 8";
+				execution_vector 	= vmadd_8;
+				vs2 				= {$random, $random};
+				vs1 				= {$random, $random};
+				vdd 				= {$random, $random};
+		
+			// vnmsac.v*
+			#20 current_instruction = "vnmsac.v* @ 64";
+				execution_vector 	= vnmsac_64;
+				vs2 				= {$random, $random};
+				vs1 				= {$random, $random};
+				vdd 				= {$random, $random};
+				
+			#20 current_instruction = "vnmsac.v* @ 32";
+				execution_vector 	= vnmsac_32;
+				vs2 				= {$random, $random};
+				vs1 				= {$random, $random};
+				vdd 				= {$random, $random};
+				
+			#20 current_instruction = "vnmsac.v* @ 16";
+				execution_vector 	= vnmsac_16;
+				vs2 				= {$random, $random};
+				vs1 				= {$random, $random};
+				vdd 				= {$random, $random};
+				
+			#20 current_instruction = "vnmsac.v* @ 8";
+				execution_vector 	= vnmsac_8;
+				vs2 				= {$random, $random};
+				vs1 				= {$random, $random};
+				vdd 				= {$random, $random};
+				
+			// vnmsub.v*
+			#20 current_instruction = "vnmsub.v* @ 64";
+				execution_vector 	= vnmsub_64;
+				vs2 				= {$random, $random};
+				vs1 				= {$random, $random};
+				vdd 				= {$random, $random};
+				
+			#20 current_instruction = "vnmsub.v* @ 32";
+				execution_vector 	= vnmsub_32;
+				vs2 				= {$random, $random};
+				vs1 				= {$random, $random};
+				vdd 				= {$random, $random};
+				
+			#20 current_instruction = "vnmsub.v* @ 16";
+				execution_vector 	= vnmsub_16;
+				vs2 				= {$random, $random};
+				vs1 				= {$random, $random};
+				vdd 				= {$random, $random};
+				
+			#20 current_instruction = "vnmsub.v* @ 8";
+				execution_vector 	= vnmsub_8;
+				vs2 				= {$random, $random};
+				vs1 				= {$random, $random};
+				vdd 				= {$random, $random};
+				
+			#20 ;
+				
+			#20 $stop;
+		end
+	
+	vector_multiply_add_unit vector_multiply_add_unit (.*);
+	
+endmodule 

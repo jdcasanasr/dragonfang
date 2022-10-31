@@ -1,0 +1,186 @@
+module vector_merge_unit
+(
+	input 	logic 			clock,
+	input 	logic 			reset_n,
+	input 	logic [7:0]		mask_vector,
+	input 	logic [12:0] 	control_vector,
+	
+	input 	logic [63:0] 	source_vector_0,
+	input 	logic [63:0] 	source_vector_1,
+	
+	output 	logic [63:0] 	target_vector
+);
+
+	logic [7:0] 	mask_vector_ff;
+	logic [12:0] 	control_vector_ff;
+	logic [63:0] 	source_vector_0_ff;
+	logic [63:0] 	source_vector_1_ff;
+	
+	logic 			mux_0_selection;
+	logic			mux_1_selection;
+	logic 			mux_2_selection;
+	logic			mux_3_selection;
+	logic 			mux_4_selection;
+	logic			mux_5_selection;
+	logic			mux_6_selection;
+	
+	logic [63:0]	merge_vector_bus;
+	
+	always_ff @ (posedge clock, negedge reset_n)
+		if (!reset_n)
+			begin
+				mask_vector_ff 		<= '0;
+				control_vector_ff 	<= '0;
+				source_vector_0_ff 	<= '0;
+				source_vector_1_ff 	<= '0;
+				
+				target_vector 		<= '0;
+			end
+			
+		else
+			begin
+				mask_vector_ff 		<= mask_vector;
+				control_vector_ff 	<= control_vector;
+				source_vector_0_ff 	<= source_vector_0;
+				source_vector_1_ff 	<= source_vector_1;
+				
+				target_vector 		<= merge_vector_bus;
+			end
+	
+	// MUX8_0
+	always_comb
+		if (mask_vector_ff[0])
+			merge_vector_bus[7:0] = source_vector_1_ff[7:0];
+			
+		else
+			merge_vector_bus[7:0] = source_vector_0_ff[7:0];
+			
+	// MUX_0
+	always_comb
+		if (control_vector_ff[0])
+			mux_0_selection = mask_vector_ff[1];
+			
+		else
+			mux_0_selection = mask_vector_ff[0];
+			
+	// MUX8_1
+	always_comb
+		if (mux_0_selection)
+			merge_vector_bus[15:8] = source_vector_1_ff[15:8];
+			
+		else
+			merge_vector_bus[15:8] = source_vector_0_ff[15:8];
+	
+	// MUX_1
+	always_comb
+		case (control_vector_ff[2:1])
+			2'b00 	: mux_1_selection = mask_vector_ff[0];
+			2'b01 	: mux_1_selection = mask_vector_ff[1];
+			2'b10 	: mux_1_selection = mask_vector_ff[2];
+			
+			default : mux_1_selection = '0;
+		endcase
+		
+	// MUX8_2
+	always_comb
+		if (mux_1_selection)
+			merge_vector_bus[23:16] = source_vector_1_ff[23:16];
+			
+		else
+			merge_vector_bus[23:16] = source_vector_0_ff[23:16];
+			
+	// MUX_2
+	always_comb
+		case (control_vector_ff[4:3])
+			2'b00 	: mux_2_selection = mask_vector_ff[0];
+			2'b01 	: mux_2_selection = mask_vector_ff[1];
+			2'b10 	: mux_2_selection = mask_vector_ff[3];
+			
+			default : mux_2_selection = '0;
+		endcase
+		
+	// MUX8_3
+	always_comb
+		if (mux_2_selection)
+			merge_vector_bus[31:24] = source_vector_1_ff[31:24];
+			
+		else
+			merge_vector_bus[31:24] = source_vector_0_ff[31:24];
+			
+	// MUX_3
+	always_comb
+		case (control_vector_ff[6:5])
+			2'b00 	: mux_3_selection = mask_vector_ff[0];
+			2'b01 	: mux_3_selection = mask_vector_ff[1];
+			2'b10 	: mux_3_selection = mask_vector_ff[2];
+			2'b11 	: mux_3_selection = mask_vector_ff[4];
+			
+			default : mux_3_selection = '0;
+		endcase
+		
+	// MUX8_4
+	always_comb
+		if (mux_3_selection)
+			merge_vector_bus[39:32] = source_vector_1_ff[39:32];
+			
+		else
+			merge_vector_bus[39:32] = source_vector_0_ff[39:32];
+			
+	// MUX_4
+	always_comb
+		case (control_vector_ff[8:7])
+			2'b00 	: mux_4_selection = mask_vector_ff[0];
+			2'b01 	: mux_4_selection = mask_vector_ff[1];
+			2'b10 	: mux_4_selection = mask_vector_ff[2];
+			2'b11 	: mux_4_selection = mask_vector_ff[5];
+			
+			default : mux_4_selection = '0;
+		endcase
+		
+	// MUX8_5
+	always_comb
+		if (mux_4_selection)
+			merge_vector_bus[47:40] = source_vector_1_ff[47:40];
+			
+		else
+			merge_vector_bus[47:40] = source_vector_0_ff[47:40];
+			
+	// MUX_5
+	always_comb
+		case (control_vector_ff[10:9])
+			2'b00 	: mux_5_selection = mask_vector_ff[0];
+			2'b01 	: mux_5_selection = mask_vector_ff[1];
+			2'b10 	: mux_5_selection = mask_vector_ff[3];
+			2'b11 	: mux_5_selection = mask_vector_ff[6];
+			
+			default : mux_5_selection = '0;
+		endcase
+		
+	// MUX8_6
+	always_comb
+		if (mux_5_selection)
+			merge_vector_bus[55:48] = source_vector_1_ff[55:48];
+			
+		else
+			merge_vector_bus[55:48] = source_vector_0_ff[55:48];
+			
+	// MUX_6
+	always_comb
+		case (control_vector_ff[12:11])
+			2'b00 	: mux_6_selection = mask_vector_ff[0];
+			2'b01 	: mux_6_selection = mask_vector_ff[1];
+			2'b10 	: mux_6_selection = mask_vector_ff[3];
+			2'b11 	: mux_6_selection = mask_vector_ff[7];
+			
+			default : mux_6_selection = '0;
+		endcase
+		
+	// MUX8_7
+	always_comb
+		if (mux_6_selection)
+			merge_vector_bus[63:56] = source_vector_1_ff[63:56];
+			
+		else
+			merge_vector_bus[63:56] = source_vector_0_ff[63:56];
+		
+endmodule 

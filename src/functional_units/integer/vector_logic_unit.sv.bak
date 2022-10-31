@@ -1,0 +1,56 @@
+module vector_logic_unit 
+
+import 	dragonfang_pkg 	:: *,
+		riscv_v_pkg 	:: *;
+
+(
+	input 	logic 				clock,
+	input 	logic 				reset_n,
+	input 	execution_vector_t 	execution_vector,
+
+	input 	logic [VLEN - 1:0]	vs2,
+	input 	logic [VLEN - 1:0] 	vs1,
+	
+	output 	logic [VLEN - 1:0] 	vd,
+	output 	logic [VLEN - 1:0] 	vd_bypass
+);
+
+	
+
+	execution_vector_t	execution_vector_ff_0;
+	logic [VLEN - 1:0] 	vs2_ff_0;
+	logic [VLEN - 1:0] 	vs1_ff_0;
+	
+	logic [VLEN - 1:0]	vd_bus;
+	
+	assign vd_bypass = vd_bus;
+	
+	always_ff @ (posedge clock, negedge reset_n)
+		if (!reset_n)
+			begin
+				execution_vector_ff_0 	<= '0;
+				vs2_ff_0 				<= '0;
+				vs1_ff_0 				<= '0;
+				
+				vd						<= '0;
+			end
+			
+		else
+			begin
+				execution_vector_ff_0 	<= execution_vector;
+				vs2_ff_0 				<= vs2;
+				vs1_ff_0 				<= vs1;
+				
+				vd						<= vd_bus;
+			end
+		
+	always_comb
+		case (execution_vector_ff_0.logic_mode)
+			ENABLED_AND_MODE 	: vd_bus = vs2_ff_0 & vs1_ff_0;
+			ENABLED_OR_MODE 	: vd_bus = vs2_ff_0 | vs1_ff_0;
+			ENABLED_XOR_MODE 	: vd_bus = vs2_ff_0 ^ vs1_ff_0;
+			
+			default 			: vd_bus = '0;
+		endcase
+	
+endmodule 

@@ -1,0 +1,10 @@
+module vector_tail_encoder_tb ();
+
+	localparam VECTOR_MASK_LENGTH = 8;
+
+	vector_tail_encoder # (.VECTOR_MASK_LENGTH(VECTOR_MASK_LENGTH)) vector_tail_encoder
+	(
+	
+	);
+
+endmodule 

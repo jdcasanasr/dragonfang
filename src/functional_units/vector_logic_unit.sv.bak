@@ -1,0 +1,67 @@
+module vector_logic_unit
+(
+	input 	logic 			clock,
+	input 	logic 			reset_n,
+	input 	logic [1:0] 	control_vector,
+	
+	input 	logic [63:0] 	source_vector_a,
+	input 	logic [63:0] 	source_vector_b,
+
+	output 	logic [63:0]	target_vector
+);
+
+	logic [1:0] 	control_vector_0_latch;
+	logic [63:0] 	source_vector_a_latch;
+	logic [63:0] 	source_vector_b_latch;
+	
+	logic [1:0]		control_vector_1_latch;
+	logic [63:0]	and_output_bus_latch;
+	logic [63:0]	or_output_bus_latch;
+	logic [63:0]	xor_output_bus_latch;
+
+	logic [63:0]	and_output_bus;
+	logic [63:0]	or_output_bus;
+	logic [63:0] 	xor_output_bus;
+	
+	always_ff @ (posedge clock, negedge reset_n)
+		if (!reset_n)
+			begin
+				control_vector_0_latch 	<= '0;
+				source_vector_a_latch 	<= '0;
+				source_vector_b_latch 	<= '0;
+				
+				control_vector_1_latch 	<= '0;
+				and_output_bus_latch	<= '0;
+				or_output_bus_latch		<= '0;
+				xor_output_bus_latch	<= '0;
+			end
+			
+		else
+			begin
+				control_vector_0_latch 	<= control_vector;
+				source_vector_a_latch 	<= source_vector_a;
+				source_vector_b_latch 	<= source_vector_b;
+				
+				control_vector_1_latch 	<= control_vector_0_latch;
+				and_output_bus_latch	<= and_output_bus;
+				or_output_bus_latch		<= or_output_bus;
+				xor_output_bus_latch	<= xor_output_bus;
+			end
+	
+	always_comb
+		begin
+			and_output_bus 	= source_vector_a_latch & source_vector_b_latch;
+			or_output_bus 	= source_vector_a_latch | source_vector_b_latch;
+			xor_output_bus 	= source_vector_a_latch ^ source_vector_b_latch;
+		end
+		
+	always_comb
+		case (control_vector_1_latch)
+			2'b00 	: target_vector = and_output_bus_latch;
+			2'b01 	: target_vector = or_output_bus_latch;
+			2'b10 	: target_vector = xor_output_bus_latch;
+			
+			default : target_vector = '0;
+		endcase
+	
+endmodule 

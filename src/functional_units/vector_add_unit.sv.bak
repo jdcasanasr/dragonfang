@@ -1,0 +1,297 @@
+module vector_add_unit
+(
+	input 	logic 			clock,
+	input 	logic 			reset_n,
+	input 	logic [25:0] 	control_vector,
+	
+	input 	logic [63:0] 	source_vector_0,
+	input 	logic [63:0] 	source_vector_1,
+	input 	logic [7:0] 	input_mask_vector,
+	
+	output 	logic [63:0] 	target_vector
+);
+
+	// Inter-stage flip-flop's.
+	logic [25:0] 	control_vector_ff_0;
+	logic [63:0] 	source_vector_0_ff_0;
+	logic [63:0] 	source_vector_1_ff_0;
+	logic [7:0]		input_mask_vector_ff_0;
+	
+	// Interconnection wires and buses.
+	logic [63:0] 	source_vector_0_effective;
+	logic [63:0] 	source_vector_1_effective;
+	logic [7:0]		input_mask_vector_effective;
+	
+	logic [63:0] 	target_vector_bus;
+	logic [63:0]	target_vector_sum_bus;
+	logic [63:0]	output_mask_vector_bus;
+	
+	logic			input_carry_0;
+	logic 			input_carry_1;
+	logic 			input_carry_2;
+	logic			input_carry_3;
+	logic			input_carry_4;
+	logic			input_carry_5;
+	logic			input_carry_6;
+	logic			input_carry_7;
+	
+	logic 			output_carry_0;
+	logic 			output_carry_1;
+	logic 			output_carry_2;
+	logic			output_carry_3;
+	logic			output_carry_4;
+	logic			output_carry_5;
+	logic			output_carry_6;
+	logic			output_carry_7;
+
+	logic [7:0] 	output_mask_vector_bus_64;
+	logic [7:0] 	output_mask_vector_bus_32;
+	logic [7:0] 	output_mask_vector_bus_16;
+	logic [7:0] 	output_mask_vector_bus_8;
+	
+	logic [63:0]	output_mask_vector_bus_effective;
+	
+	assign output_mask_vector_bus_64 	= {{7{1'b0}}, output_carry_7};										
+	assign output_mask_vector_bus_32 	= {{6{1'b0}}, output_carry_7, output_carry_3};
+	assign output_mask_vector_bus_16 	= {{4{1'b0}}, output_carry_7, output_carry_5, output_carry_3, output_carry_1};
+	assign output_mask_vector_bus_8 	= {output_carry_7, output_carry_6, output_carry_5, output_carry_4,
+											output_carry_3, output_carry_2, output_carry_1, output_carry_0};
+	
+	// Manage inter-stage flip-flop's.
+	always_ff @ (posedge clock, negedge reset_n)
+		if (!reset_n)
+			begin
+				control_vector_ff_0 	= '0;
+				source_vector_0_ff_0 	= '0;
+				source_vector_1_ff_0 	= '0;
+				input_mask_vector_ff_0 	= '0;
+				
+				target_vector 			= '0;
+			end
+			
+		else
+			begin
+				control_vector_ff_0 	= control_vector;
+				source_vector_0_ff_0 	= source_vector_0;
+				source_vector_1_ff_0 	= source_vector_1;
+				input_mask_vector_ff_0 	= input_mask_vector;
+				
+				target_vector 			= target_vector_bus;
+			end
+
+	// Select between untouched or negated inputs (for v*sub* and vrsub)
+	always_comb
+		if (control_vector_ff_0[0])
+			source_vector_0_effective = ~source_vector_0_ff_0;
+		
+		else
+			source_vector_0_effective = source_vector_0_ff_0;
+			
+	always_comb
+		if (control_vector_ff_0[1])
+			source_vector_1_effective = ~source_vector_1_ff_0;
+		
+		else
+			source_vector_1_effective = source_vector_1_ff_0;
+			
+	always_comb
+		if (control_vector_ff_0[2])
+			input_mask_vector_effective = ~input_mask_vector_ff_0;
+		
+		else
+			input_mask_vector_effective = input_mask_vector_ff_0;
+			
+	// Select input carry for every add_8 module.
+	always_comb
+		case (control_vector_ff_0[4:3])
+			2'b00 	: input_carry_0 = 1'b0;
+			2'b01 	: input_carry_0 = 1'b1;
+			2'b11 	: input_carry_0 = input_mask_vector_effective[0];
+			
+			default : input_carry_0 = 1'b0;
+		endcase
+	
+	always_comb
+		case (control_vector_ff_0[6:5])
+			2'b00 	: input_carry_1 = 1'b0;
+			2'b01 	: input_carry_1 = 1'b1;
+			2'b10	: input_carry_1 = output_carry_0;
+			2'b11 	: input_carry_1 = input_mask_vector_effective[1];
+			
+			default : input_carry_1 = 1'b0;
+		endcase
+		
+	always_comb
+		case (control_vector_ff_0[9:7])
+			3'b000 	: input_carry_2 = 1'b0;
+			3'b001 	: input_carry_2 = 1'b1;
+			3'b010	: input_carry_2 = output_carry_1;
+			3'b011 	: input_carry_2 = input_mask_vector_effective[2];
+			3'b100	: input_carry_2 = input_mask_vector_effective[1];
+			
+			default : input_carry_2 = 1'b0;
+		endcase
+		
+	always_comb
+		case (control_vector_ff_0[11:10])
+			2'b00 	: input_carry_3 = 1'b0;
+			2'b01 	: input_carry_3 = 1'b1;
+			2'b10	: input_carry_3 = output_carry_2;
+			2'b11 	: input_carry_3 = input_mask_vector_effective[3];
+			
+			default : input_carry_3 = 1'b0;
+		endcase
+	
+	always_comb
+		case (control_vector_ff_0[14:12])
+			3'b000 	: input_carry_4 = 1'b0;
+			3'b001 	: input_carry_4 = 1'b1;
+			3'b010	: input_carry_4 = output_carry_3;
+			3'b011 	: input_carry_4 = input_mask_vector_effective[4];
+			3'b100	: input_carry_4 = input_mask_vector_effective[2];
+			3'b101 	: input_carry_4 = input_mask_vector_effective[1];
+			
+			default : input_carry_4 = 1'b0;
+		endcase
+	
+	always_comb
+		case (control_vector_ff_0[16:15])
+			2'b00 	: input_carry_5 = 1'b0;
+			2'b01 	: input_carry_5 = 1'b1;
+			2'b10	: input_carry_5 = output_carry_4;
+			2'b11 	: input_carry_5 = input_mask_vector_effective[5];
+			
+			default : input_carry_5 = 1'b0;
+		endcase
+		
+	always_comb
+		case (control_vector_ff_0[19:17])
+			3'b000 	: input_carry_6 = 1'b0;
+			3'b001 	: input_carry_6 = 1'b1;
+			3'b010	: input_carry_6 = output_carry_5;
+			3'b011 	: input_carry_6 = input_mask_vector_effective[6];
+			3'b100 	: input_carry_6 = input_mask_vector_effective[3];
+			
+			default : input_carry_6 = 1'b0;
+		endcase
+	
+	always_comb
+		case (control_vector_ff_0[21:20])
+			2'b00 	: input_carry_7 = 1'b0;
+			2'b01 	: input_carry_7 = 1'b1;
+			2'b10	: input_carry_7 = output_carry_6;
+			2'b11 	: input_carry_7 = input_mask_vector_effective[7];
+			
+			default : input_carry_7 = 1'b0;
+		endcase
+		
+	always_comb
+		case (control_vector_ff_0[23:22])
+			2'b00 	: output_mask_vector_bus = output_mask_vector_bus_64;
+			2'b01 	: output_mask_vector_bus = output_mask_vector_bus_32;
+			2'b10 	: output_mask_vector_bus = output_mask_vector_bus_16;
+			2'b11 	: output_mask_vector_bus = output_mask_vector_bus_8;
+			
+			default : output_mask_vector_bus = '0;
+		endcase
+		
+	always_comb
+		if(control_vector_ff_0[24])
+			case (control_vector_ff_0[23:22])
+				2'b00 	: output_mask_vector_bus_effective = {{63{1'b0}}, ~output_mask_vector_bus[0]};
+				2'b01 	: output_mask_vector_bus_effective = {{62{1'b0}}, ~output_mask_vector_bus[1:0]};
+				2'b10 	: output_mask_vector_bus_effective = {{60{1'b0}}, ~output_mask_vector_bus[3:0]};
+				2'b11 	: output_mask_vector_bus_effective = {{56{1'b0}}, ~output_mask_vector_bus[7:0]};
+			endcase
+			
+		else
+			output_mask_vector_bus_effective = output_mask_vector_bus;
+			
+	always_comb
+		if (control_vector_ff_0[25])
+			target_vector_bus = output_mask_vector_bus_effective;
+			
+		else
+			target_vector_bus = target_vector_sum_bus;
+	
+	add_8 add_8_0
+	(
+		.source_element_0 	(source_vector_0_effective[7:0]),
+		.source_element_1 	(source_vector_1_effective[7:0]),
+		.input_carry 		(input_carry_0),
+		
+		.target_element 	(target_vector_sum_bus[7:0]),
+		.output_carry 		(output_carry_0)
+	);
+	
+	add_8 add_8_1
+	(
+		.source_element_0 	(source_vector_0_effective[15:8]),
+		.source_element_1 	(source_vector_1_effective[15:8]),
+		.input_carry 		(input_carry_1),
+		
+		.target_element 	(target_vector_sum_bus[15:8]),
+		.output_carry 		(output_carry_1)
+	);
+	
+	add_8 add_8_2
+	(
+		.source_element_0 	(source_vector_0_effective[23:16]),
+		.source_element_1 	(source_vector_1_effective[23:16]),
+		.input_carry 		(input_carry_2),
+		
+		.target_element 	(target_vector_sum_bus[23:16]),
+		.output_carry 		(output_carry_2)
+	);
+	
+	add_8 add_8_3
+	(
+		.source_element_0 	(source_vector_0_effective[31:24]),
+		.source_element_1 	(source_vector_1_effective[31:24]),
+		.input_carry 		(input_carry_3),
+		
+		.target_element 	(target_vector_sum_bus[31:24]),
+		.output_carry 		(output_carry_3)
+	);
+	
+	add_8 add_8_4
+	(
+		.source_element_0 	(source_vector_0_effective[39:32]),
+		.source_element_1 	(source_vector_1_effective[39:32]),
+		.input_carry 		(input_carry_4),
+		
+		.target_element 	(target_vector_sum_bus[39:32]),
+		.output_carry 		(output_carry_4)
+	);
+	
+	add_8 add_8_5
+	(
+		.source_element_0 	(source_vector_0_effective[47:40]),
+		.source_element_1 	(source_vector_1_effective[47:40]),
+		.input_carry 		(input_carry_5),
+		
+		.target_element 	(target_vector_sum_bus[47:40]),
+		.output_carry 		(output_carry_5)
+	);
+	
+	add_8 add_8_6
+	(
+		.source_element_0 	(source_vector_0_effective[55:48]),
+		.source_element_1 	(source_vector_1_effective[55:48]),
+		.input_carry 		(input_carry_6),
+		
+		.target_element 	(target_vector_sum_bus[55:48]),
+		.output_carry 		(output_carry_6)
+	);
+	
+	add_8 add_8_7
+	(
+		.source_element_0 	(source_vector_0_effective[63:56]),
+		.source_element_1 	(source_vector_1_effective[63:56]),
+		.input_carry 		(input_carry_7),
+		
+		.target_element 	(target_vector_sum_bus[63:56]),
+		.output_carry 		(output_carry_7)
+	);
+	
+endmodule 

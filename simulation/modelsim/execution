@@ -1,0 +1,32 @@
+onerror {resume}
+quietly WaveActivateNextPane {} 0
+add wave -noupdate -divider {Control Signals}
+add wave -noupdate /execution_tb/clock
+add wave -noupdate /execution_tb/reset_n
+add wave -noupdate /execution_tb/execution_vector
+add wave -noupdate -divider {Input Signals}
+add wave -noupdate -radix unsigned /execution_tb/functional_unit_tag
+add wave -noupdate -radix unsigned -childformat {{{/execution_tb/destination_vrg_tag[4]} -radix unsigned} {{/execution_tb/destination_vrg_tag[3]} -radix unsigned} {{/execution_tb/destination_vrg_tag[2]} -radix unsigned} {{/execution_tb/destination_vrg_tag[1]} -radix unsigned} {{/execution_tb/destination_vrg_tag[0]} -radix unsigned}} -subitemconfig {{/execution_tb/destination_vrg_tag[4]} {-height 21 -radix unsigned} {/execution_tb/destination_vrg_tag[3]} {-height 21 -radix unsigned} {/execution_tb/destination_vrg_tag[2]} {-height 21 -radix unsigned} {/execution_tb/destination_vrg_tag[1]} {-height 21 -radix unsigned} {/execution_tb/destination_vrg_tag[0]} {-height 21 -radix unsigned}} /execution_tb/destination_vrg_tag
+add wave -noupdate /execution_tb/vrg_input_data
+add wave -noupdate -divider {Output Signals}
+add wave -noupdate -radix hexadecimal -childformat {{/execution_tb/vrg_output_data.tag -radix hexadecimal} {/execution_tb/vrg_output_data.data -radix hexadecimal}} -subitemconfig {/execution_tb/vrg_output_data.tag {-height 21 -radix hexadecimal} /execution_tb/vrg_output_data.data {-height 21 -radix hexadecimal}} /execution_tb/vrg_output_data
+add wave -noupdate -divider {Expected Output Signals}
+add wave -noupdate /execution_tb/expected_vrg_output_data
+TreeUpdate [SetDefaultTree]
+WaveRestoreCursors {{Cursor 1} {104518 ps} 0}
+quietly wave cursor active 1
+configure wave -namecolwidth 218
+configure wave -valuecolwidth 224
+configure wave -justifyvalue left
+configure wave -signalnamewidth 1
+configure wave -snapdistance 10
+configure wave -datasetprefix 0
+configure wave -rowmargin 4
+configure wave -childrowmargin 2
+configure wave -gridoffset 0
+configure wave -gridperiod 1
+configure wave -griddelta 40
+configure wave -timeline 0
+configure wave -timelineunits ns
+update
+WaveRestoreZoom {0 ps} {99870 ps}

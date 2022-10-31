@@ -1,0 +1,3 @@
+interface functional_unit_input_interface;
+
+endinterface : functional_unit_input_interface

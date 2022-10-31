@@ -1,0 +1,39 @@
+onerror {resume}
+quietly WaveActivateNextPane {} 0
+add wave -noupdate -divider {Control Signals}
+add wave -noupdate -radix hexadecimal /vector_register_read_tb/clock
+add wave -noupdate -radix hexadecimal /vector_register_read_tb/reset_n
+add wave -noupdate -radix hexadecimal -childformat {{/vector_register_read_tb/register_read_vector.read_request -radix hexadecimal} {/vector_register_read_tb/register_read_vector.write_back_request -radix hexadecimal}} -expand -subitemconfig {/vector_register_read_tb/register_read_vector.read_request {-radix hexadecimal} /vector_register_read_tb/register_read_vector.write_back_request {-radix hexadecimal}} /vector_register_read_tb/register_read_vector
+add wave -noupdate -divider {Write Back Signals}
+add wave -noupdate -radix hexadecimal -childformat {{/vector_register_read_tb/write_back_packet.tag -radix hexadecimal} {/vector_register_read_tb/write_back_packet.data -radix hexadecimal}} -expand -subitemconfig {/vector_register_read_tb/write_back_packet.tag {-radix hexadecimal} /vector_register_read_tb/write_back_packet.data {-radix hexadecimal}} /vector_register_read_tb/write_back_packet
+add wave -noupdate -divider {Input Signals}
+add wave -noupdate -radix hexadecimal /vector_register_read_tb/v0_address
+add wave -noupdate -radix hexadecimal /vector_register_read_tb/vs1_address
+add wave -noupdate -radix hexadecimal /vector_register_read_tb/vs2_address
+add wave -noupdate -radix hexadecimal /vector_register_read_tb/vd_address
+add wave -noupdate -divider {Output Signals}
+add wave -noupdate -radix hexadecimal /vector_register_read_tb/v0_packet
+add wave -noupdate -radix hexadecimal /vector_register_read_tb/vs1_packet
+add wave -noupdate -radix hexadecimal /vector_register_read_tb/vs2_packet
+add wave -noupdate -radix hexadecimal /vector_register_read_tb/vd_packet
+add wave -noupdate -divider {VRF Contents}
+add wave -noupdate -radix hexadecimal -expand /vector_register_read_tb/vector_register_read/vector_register_file/register_file
+TreeUpdate [SetDefaultTree]
+WaveRestoreCursors {{Cursor 1} {1100000 ps} 0}
+quietly wave cursor active 1
+configure wave -namecolwidth 329
+configure wave -valuecolwidth 371
+configure wave -justifyvalue left
+configure wave -signalnamewidth 1
+configure wave -snapdistance 10
+configure wave -datasetprefix 0
+configure wave -rowmargin 4
+configure wave -childrowmargin 2
+configure wave -gridoffset 0
+configure wave -gridperiod 1
+configure wave -griddelta 40
+configure wave -timeline 0
+configure wave -timelineunits ns
+update
+WaveRestoreZoom {0 ps} {2405157 ps}
+run -all

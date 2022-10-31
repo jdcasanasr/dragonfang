@@ -1,0 +1,16 @@
+module vector_multiply_add_unit_freq
+
+import 	dragonfang_pkg 	:: *,
+		riscv_v_pkg 	:: *;
+		
+(
+	input 	execution_vector_t 	execution_vector,
+	
+	input 	logic [VLEN - 1:0] 		vs2,
+	input 	logic [VLEN - 1:0] 		vs1,
+	input 	logic [VLEN - 1:0]		vdd,
+	
+	output 	logic [VLEN - 1:0] 		vd,
+);
+
+endmodule 

@@ -1,0 +1,10 @@
+module vector_floating_point_sign_injection_unit
+
+import 	dragonfang_pkg::*,
+		dragonfang_floating_point_pkg::*;
+
+(
+
+);
+
+endmodule 

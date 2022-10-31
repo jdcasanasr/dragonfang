@@ -1,0 +1,115 @@
+`timescale 1 ns / 1 ns
+`include "C:/Users/jdani/Documents/dragonfang/hdl/packages/execution_vectors_pkg.sv"
+
+module vector_merge_unit_tb
+
+import 	dragonfang_pkg::*,
+		execution_vectors_pkg::*;
+		
+();
+
+	logic 				clock;
+	logic 				reset_n;
+	execution_vector_t 	execution_vector;
+	
+	logic [63:0] 		vs2;
+	logic [63:0] 		vs1;
+	logic [63:0] 		v0;
+	
+	logic [63:0] 		vd_low;
+	
+	logic [63:0]		expected_vd_low;
+	string 				instruction;
+
+	initial
+		begin
+			instruction 		= "NULL";
+		
+			clock 				= 1'b1;
+			reset_n 			= 1'b1;
+			execution_vector 	= '0;
+			
+			vs2 				= '0;
+			vs1 				= '0;
+			v0 					= '0;
+		end
+	
+	always
+		#10 clock = ~clock;
+		
+	always
+		begin
+			#5 	reset_n 				= 1'b0;
+			#5 	reset_n 				= 1'b1;
+			
+			// vmerge.v*m
+			#10 instruction 			= "vmerge.v*m @ SEW = 64";
+			
+				vs2 					= {$random, $random};
+				vs1 					= {$random, $random};
+				v0 						= {$random, $random};
+				
+				execution_vector 		= vmerge_64;
+				
+				expected_vd_low 		= (v0[0] ? vs1 : vs2);
+				
+			#20 instruction 			= "vmerge.v*m @ SEW = 32";
+			
+				vs2 					= {$random, $random};
+				vs1 					= {$random, $random};
+				v0 						= {$random, $random};
+				
+				execution_vector 		= vmerge_32;
+				
+				expected_vd_low[31:0] 	= (v0[0] ? vs1[31:0] : vs2[31:0]);
+				expected_vd_low[63:32] 	= (v0[1] ? vs1[63:32] : vs2[63:32]);
+				
+			#20 instruction 			= "vmerge.v*m @ SEW = 16";
+			
+				vs2 					= {$random, $random};
+				vs1 					= {$random, $random};
+				v0 						= {$random, $random};
+				
+				execution_vector 		= vmerge_16;
+				
+				expected_vd_low[15:0] 	= (v0[0] ? vs1[15:0] : vs2[15:0]);
+				expected_vd_low[31:16] 	= (v0[1] ? vs1[31:16] : vs2[31:16]);
+				expected_vd_low[47:32] 	= (v0[2] ? vs1[47:32] : vs2[47:32]);
+				expected_vd_low[63:48] 	= (v0[3] ? vs1[63:48] : vs2[63:48]);
+				
+			#20 instruction 			= "vmerge.v*m @ SEW = 8";
+			
+				vs2 					= {$random, $random};
+				vs1 					= {$random, $random};
+				v0 						= {$random, $random};
+				
+				execution_vector 		= vmerge_8;
+				
+				expected_vd_low[7:0] 	= (v0[0] ? vs1[7:0] : vs2[7:0]);
+				expected_vd_low[15:8] 	= (v0[1] ? vs1[15:8] : vs2[15:8]);
+				expected_vd_low[23:16] 	= (v0[2] ? vs1[23:16] : vs2[23:16]);
+				expected_vd_low[31:24] 	= (v0[3] ? vs1[31:24] : vs2[31:24]);
+				expected_vd_low[39:32] 	= (v0[4] ? vs1[39:32] : vs2[39:32]);
+				expected_vd_low[47:40] 	= (v0[5] ? vs1[47:40] : vs2[47:40]);
+				expected_vd_low[55:48] 	= (v0[6] ? vs1[55:48] : vs2[55:48]);
+				expected_vd_low[63:56] 	= (v0[7] ? vs1[63:56] : vs2[63:56]);
+				
+			#20 ;
+		
+			#20 $stop;
+		end
+	
+	vector_merge_unit vector_merge_unit_0
+	(
+		.clock 				(clock),
+		.reset_n 			(reset_n),
+		.execution_vector 	(execution_vector),
+		
+		.vs2 				(vs2),
+		.vs1 				(vs1),
+		.v0 				(v0),
+		
+		.vd_low 			(vd_low)
+	);
+	
+endmodule 

@@ -1,0 +1,21 @@
+module vector_tail_encoder
+#(
+	parameter VECTOR_MASK_LENGTH = 8
+)
+(
+	input 	logic [VECTOR_MASK_LENGTH - 1:0] vector_mask,
+	
+	output 	logic [VECTOR_MASK_LENGTH - 1:0] encoded_vector_mask
+);
+
+	wire [MASK_LENGTH - 1:0] number_leading_zeroes;
+
+
+	leading_bits_counter #(.INPUT_VECTOR_WIDTH(VECTOR_MASK_LENGTH), .BIT_TO_COUNT(1'b0)) leading_zeroes_counter
+	(
+		.input_vector (vector_mask),
+	
+		.count_vector (number_leading_zeroes)
+	);
+
+endmodule 

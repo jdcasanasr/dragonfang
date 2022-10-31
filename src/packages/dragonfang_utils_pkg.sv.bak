@@ -1,0 +1,7 @@
+`ifndef DRAGONFANG_UTILS_PKG_COMPILED
+	`define DRAGONFANG_UTILS_PKG_COMPILED
+		package dragonfang_utils_pkg;
+
+
+		endpackage
+`endif

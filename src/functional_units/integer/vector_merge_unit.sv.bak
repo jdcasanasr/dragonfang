@@ -1,0 +1,80 @@
+module vector_merge_unit
+
+import dragonfang_pkg::*;
+
+(
+	input 	logic 					clock,
+	input 	logic 					reset_n,
+	input	execution_vector_t 		execution_vector,
+	
+	input 	logic [63:0] 			vs2,
+	input 	logic [63:0] 			vs1,
+	input 	logic [63:0]			v0,
+	
+	output 	logic [63:0] 			vd_low
+);
+
+	execution_vector_t 	execution_vector_ff_0;
+	logic [63:0] 		vs2_ff_0;
+	logic [63:0] 		vs1_ff_0;
+	logic [63:0] 		v0_ff_0;
+	
+	logic [63:0]		vd_low_bus;
+	
+	always_ff @ (posedge clock, negedge reset_n)
+		if (!reset_n)
+			begin
+				execution_vector_ff_0 	<= '0;
+				vs2_ff_0 				<= '0;
+				vs1_ff_0 				<= '0;
+				v0_ff_0					<= '0;
+				
+				vd_low					<= '0;
+			end
+			
+		else
+			begin
+				execution_vector_ff_0 	<= execution_vector;
+				vs2_ff_0 				<= vs2;
+				vs1_ff_0 				<= vs1;
+				v0_ff_0					<= v0;
+				
+				vd_low					<= vd_low_bus;
+			end
+		
+	always_comb
+		case (execution_vector_ff_0.bit_mode)
+			ENABLED_64BIT_MODE 	:
+				begin
+					vd_low_bus = (v0_ff_0[0] ? vs1_ff_0 : vs2_ff_0);
+				end
+			
+			ENABLED_32BIT_MODE 	:
+				begin
+					vd_low_bus[31:0] 	= (v0_ff_0[0] ? vs1_ff_0[31:0] : vs2_ff_0[31:0]);
+					vd_low_bus[63:32] 	= (v0_ff_0[1] ? vs1_ff_0[63:32] : vs2_ff_0[63:32]);
+				end
+			
+			ENABLED_16BIT_MODE 	:
+				begin
+					vd_low_bus[15:0] 	= (v0_ff_0[0] ? vs1_ff_0[15:0] : vs2_ff_0[15:0]);
+					vd_low_bus[31:16] 	= (v0_ff_0[1] ? vs1_ff_0[31:16] : vs2_ff_0[31:16]);
+					vd_low_bus[47:32] 	= (v0_ff_0[2] ? vs1_ff_0[47:32] : vs2_ff_0[47:32]);
+					vd_low_bus[63:48] 	= (v0_ff_0[3] ? vs1_ff_0[63:48] : vs2_ff_0[63:48]);
+				end
+			
+			ENABLED_8BIT_MODE 	:
+				begin
+					vd_low_bus[7:0] 	= (v0_ff_0[0] ? vs1_ff_0[7:0] : vs2_ff_0[7:0]);
+					vd_low_bus[15:8] 	= (v0_ff_0[1] ? vs1_ff_0[15:8] : vs2_ff_0[15:8]);
+					vd_low_bus[23:16] 	= (v0_ff_0[2] ? vs1_ff_0[23:16] : vs2_ff_0[23:16]);
+					vd_low_bus[31:24] 	= (v0_ff_0[3] ? vs1_ff_0[31:24] : vs2_ff_0[31:24]);
+					vd_low_bus[39:32] 	= (v0_ff_0[4] ? vs1_ff_0[39:32] : vs2_ff_0[39:32]);
+					vd_low_bus[47:40] 	= (v0_ff_0[5] ? vs1_ff_0[47:40] : vs2_ff_0[47:40]);
+					vd_low_bus[55:48] 	= (v0_ff_0[6] ? vs1_ff_0[55:48] : vs2_ff_0[55:48]);
+					vd_low_bus[63:56] 	= (v0_ff_0[7] ? vs1_ff_0[63:56] : vs2_ff_0[63:56]);
+				end
+			
+		endcase
+		
+endmodule 

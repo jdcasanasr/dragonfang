@@ -1,0 +1,30 @@
+onerror {resume}
+quietly WaveActivateNextPane {} 0
+add wave -noupdate -divider {Control Signals}
+add wave -noupdate -radix hexadecimal /vector_write_back_tb/clock
+add wave -noupdate -radix hexadecimal /vector_write_back_tb/reset_n
+add wave -noupdate -radix hexadecimal -childformat {{/vector_write_back_tb/write_back_vector.bit_mode -radix hexadecimal} {/vector_write_back_tb/write_back_vector.vm -radix hexadecimal} {/vector_write_back_tb/write_back_vector.vma -radix hexadecimal} {/vector_write_back_tb/write_back_vector.vta -radix hexadecimal}} -expand -subitemconfig {/vector_write_back_tb/write_back_vector.bit_mode {-radix hexadecimal} /vector_write_back_tb/write_back_vector.vm {-radix hexadecimal} /vector_write_back_tb/write_back_vector.vma {-radix hexadecimal} /vector_write_back_tb/write_back_vector.vta {-radix hexadecimal}} /vector_write_back_tb/write_back_vector
+add wave -noupdate -divider {Input Signals}
+add wave -noupdate -radix hexadecimal -childformat {{/vector_write_back_tb/v0.tag -radix hexadecimal} {/vector_write_back_tb/v0.data -radix hexadecimal}} -expand -subitemconfig {/vector_write_back_tb/v0.tag {-radix hexadecimal} /vector_write_back_tb/v0.data {-radix hexadecimal}} /vector_write_back_tb/v0
+add wave -noupdate -radix hexadecimal -childformat {{/vector_write_back_tb/vd_old.tag -radix hexadecimal} {/vector_write_back_tb/vd_old.data -radix hexadecimal}} -expand -subitemconfig {/vector_write_back_tb/vd_old.tag {-radix hexadecimal} /vector_write_back_tb/vd_old.data {-radix hexadecimal}} /vector_write_back_tb/vd_old
+add wave -noupdate -radix hexadecimal -childformat {{/vector_write_back_tb/vd_new.tag -radix hexadecimal} {/vector_write_back_tb/vd_new.data -radix hexadecimal}} -expand -subitemconfig {/vector_write_back_tb/vd_new.tag {-radix hexadecimal} /vector_write_back_tb/vd_new.data {-radix hexadecimal}} /vector_write_back_tb/vd_new
+add wave -noupdate -divider {Output Signals}
+add wave -noupdate -radix hexadecimal -childformat {{/vector_write_back_tb/vd_write_back.tag -radix hexadecimal} {/vector_write_back_tb/vd_write_back.data -radix hexadecimal}} -expand -subitemconfig {/vector_write_back_tb/vd_write_back.tag {-radix hexadecimal} /vector_write_back_tb/vd_write_back.data {-radix hexadecimal}} /vector_write_back_tb/vd_write_back
+TreeUpdate [SetDefaultTree]
+WaveRestoreCursors {{Cursor 1} {200059193 ps} 0}
+quietly wave cursor active 1
+configure wave -namecolwidth 313
+configure wave -valuecolwidth 348
+configure wave -justifyvalue left
+configure wave -signalnamewidth 1
+configure wave -snapdistance 10
+configure wave -datasetprefix 0
+configure wave -rowmargin 4
+configure wave -childrowmargin 2
+configure wave -gridoffset 0
+configure wave -gridperiod 1
+configure wave -griddelta 40
+configure wave -timeline 0
+configure wave -timelineunits ps
+update
+WaveRestoreZoom {199950136 ps} {200045624 ps}

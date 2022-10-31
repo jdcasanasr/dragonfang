@@ -1,0 +1,10 @@
+`ifndef DRAGONFANG_INTEGER_PKG
+`define DRAGONFANG_INTEGER_PKG
+
+package dragonfang_integer_pkg;
+
+	`include "C:/Users/jdani/Documents/Thesis/dragonfang/hdl/auxiliary_modules/leading_bit_counter.sv"
+
+endpackage 
+
+`endif

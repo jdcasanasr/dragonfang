@@ -1,0 +1,234 @@
+`timescale 1 ns / 1 ns
+`include "C:/Users/jdani/Documents/dragonfang/hdl/packages/execution_vectors_pkg.sv"
+
+module vector_division_unit_tb
+
+import 	dragonfang_pkg::*,
+		execution_vectors_pkg::*;
+
+();
+	
+	logic 				clock;
+	logic 				reset_n;
+	execution_vector_t 	execution_vector;
+	
+	logic [63:0] 		vs2;
+	logic [63:0] 		vs1;
+	
+	logic [63:0] 		vd_low;
+
+	logic [63:0]		expected_vd_low;
+	
+	string 				current_instruction;
+	
+	initial
+		begin
+			clock 				= 1'b1;
+			reset_n 			= 1'b1;
+			execution_vector 	= '0;
+			vs2 	= '0;
+			vs1 	= '0;
+			current_instruction = "NULL";
+		end
+		
+	always
+		#10 clock = ~clock;
+		
+	always
+		begin
+			#5 	reset_n 							= 1'b0;
+				expected_vd_low						= '0;
+				current_instruction 				= "NULL";
+			
+			#5 	reset_n 							= 1'b1;
+			
+			// vdiv.v* @ 64
+			#10 current_instruction 				= "vdiv.v* @ 64";
+				execution_vector 					= vdiv_64;
+				vs2 					= {$random, $random};
+				vs1 					= {$random, $random};
+				
+				expected_vd_low		 				= $signed(vs2) / $signed(vs1);
+
+			// vdiv.v* @ 32
+			#20 current_instruction 				= "vdiv.v* @ 32";
+				execution_vector 					= vdiv_32;
+				vs2 					= {$random, $random};
+				vs1 					= {$random, $random};
+				
+				expected_vd_low[31:0] 				= $signed(vs2[31:0]) 	/ $signed(vs1[31:0]);
+				expected_vd_low[63:32] 				= $signed(vs2[63:32]) 	/ $signed(vs1[63:32]);
+
+			// vdiv.v* @ 16
+			#20 current_instruction 				= "vdiv.v* @ 16";
+				execution_vector 					= vdiv_16;
+				vs2 					= {$random, $random};
+				vs1 					= {$random, $random};
+				
+				expected_vd_low[15:0] 				= $signed(vs2[15:0]) 	/ $signed(vs1[15:0]);
+				expected_vd_low[31:16] 				= $signed(vs2[31:16]) 	/ $signed(vs1[31:16]);
+				expected_vd_low[47:32] 				= $signed(vs2[47:32]) 	/ $signed(vs1[47:32]);
+				expected_vd_low[63:48] 				= $signed(vs2[63:48]) 	/ $signed(vs1[63:48]);
+
+			// vdiv.v* @ 8
+			#20 current_instruction 				= "vdiv.v* @ 8";
+				execution_vector 					= vdiv_8;
+				vs2 					= {$random, $random};
+				vs1 					= {$random, $random};
+				
+				expected_vd_low[7:0] 				= $signed(vs2[7:0]) 	/ $signed(vs1[7:0]);
+				expected_vd_low[15:8] 				= $signed(vs2[15:8]) 	/ $signed(vs1[15:8]);
+				expected_vd_low[23:16] 				= $signed(vs2[23:16]) 	/ $signed(vs1[23:16]);
+				expected_vd_low[31:24] 				= $signed(vs2[31:24]) 	/ $signed(vs1[31:24]);
+				expected_vd_low[39:32] 				= $signed(vs2[39:32]) 	/ $signed(vs1[39:32]);
+				expected_vd_low[47:40] 				= $signed(vs2[47:40]) 	/ $signed(vs1[47:40]);
+				expected_vd_low[55:48] 				= $signed(vs2[55:48]) 	/ $signed(vs1[55:48]);
+				expected_vd_low[63:56] 				= $signed(vs2[63:56]) 	/ $signed(vs1[63:56]);
+
+			// vdivu.v* @ 64
+			#20 current_instruction 				= "vdivu.v* @ 64";
+				execution_vector 					= vdivu_64;
+				vs2 					= {$random, $random};
+				vs1 					= {$random, $random};
+				
+				expected_vd_low		 				= $unsigned(vs2) / $unsigned(vs1);
+
+			// vdivu.v* @ 32
+			#20 current_instruction 				= "vdivu.v* @ 32";
+				execution_vector 					= vdivu_32;
+				vs2 					= {$random, $random};
+				vs1 					= {$random, $random};
+				
+				expected_vd_low[31:0] 				= $unsigned(vs2[31:0]) 	/ $unsigned(vs1[31:0]);
+				expected_vd_low[63:32] 				= $unsigned(vs2[63:32]) / $unsigned(vs1[63:32]);
+
+			// vdivu.v* @ 16
+			#20 current_instruction 				= "vdivu.v* @ 16";
+				execution_vector 					= vdivu_16;
+				vs2 					= {$random, $random};
+				vs1 					= {$random, $random};
+				
+				expected_vd_low[15:0] 				= $unsigned(vs2[15:0]) 	/ $unsigned(vs1[15:0]);
+				expected_vd_low[31:16] 				= $unsigned(vs2[31:16]) / $unsigned(vs1[31:16]);
+				expected_vd_low[47:32] 				= $unsigned(vs2[47:32]) / $unsigned(vs1[47:32]);
+				expected_vd_low[63:48] 				= $unsigned(vs2[63:48]) / $unsigned(vs1[63:48]);
+
+			// vdivu.v* @ 8
+			#20 current_instruction 				= "vdivu.v* @ 8";
+				execution_vector 					= vdivu_8;
+				vs2 					= {$random, $random};
+				vs1 					= {$random, $random};
+				
+				expected_vd_low[7:0] 				= $unsigned(vs2[7:0]) 	/ $unsigned(vs1[7:0]);
+				expected_vd_low[15:8] 				= $unsigned(vs2[15:8]) 	/ $unsigned(vs1[15:8]);
+				expected_vd_low[23:16] 				= $unsigned(vs2[23:16]) / $unsigned(vs1[23:16]);
+				expected_vd_low[31:24] 				= $unsigned(vs2[31:24]) / $unsigned(vs1[31:24]);
+				expected_vd_low[39:32] 				= $unsigned(vs2[39:32]) / $unsigned(vs1[39:32]);
+				expected_vd_low[47:40] 				= $unsigned(vs2[47:40]) / $unsigned(vs1[47:40]);
+				expected_vd_low[55:48] 				= $unsigned(vs2[55:48]) / $unsigned(vs1[55:48]);
+				expected_vd_low[63:56] 				= $unsigned(vs2[63:56]) / $unsigned(vs1[63:56]);
+
+			// vrem.v* @ 64
+			#20 current_instruction 				= "vrem.v* @ 64";
+				execution_vector 					= vrem_64;
+				vs2 					= {$random, $random};
+				vs1 					= {$random, $random};
+				
+				expected_vd_low		 				= $signed(vs2) % $signed(vs1);
+
+			// vrem.v* @ 32
+			#20 current_instruction 				= "vrem.v* @ 32";
+				execution_vector 					= vrem_32;
+				vs2 					= {$random, $random};
+				vs1 					= {$random, $random};
+				
+				expected_vd_low[31:0] 				= $signed(vs2[31:0]) 	% $signed(vs1[31:0]);
+				expected_vd_low[63:32] 				= $signed(vs2[63:32]) 	% $signed(vs1[63:32]);
+
+			// vrem.v* @ 16
+			#20 current_instruction 				= "vrem.v* @ 16";
+				execution_vector 					= vrem_16;
+				vs2 					= {$random, $random};
+				vs1 					= {$random, $random};
+				
+				expected_vd_low[15:0] 				= $signed(vs2[15:0]) 	% $signed(vs1[15:0]);
+				expected_vd_low[31:16] 				= $signed(vs2[31:16]) 	% $signed(vs1[31:16]);
+				expected_vd_low[47:32] 				= $signed(vs2[47:32]) 	% $signed(vs1[47:32]);
+				expected_vd_low[63:48] 				= $signed(vs2[63:48]) 	% $signed(vs1[63:48]);
+
+			// vrem.v* @ 8
+			#20 current_instruction 				= "vrem.v* @ 8";
+				execution_vector 					= vrem_8;
+				vs2 					= {$random, $random};
+				vs1 					= {$random, $random};
+				
+				expected_vd_low[7:0] 				= $signed(vs2[7:0]) 	% $signed(vs1[7:0]);
+				expected_vd_low[15:8] 				= $signed(vs2[15:8]) 	% $signed(vs1[15:8]);
+				expected_vd_low[23:16] 				= $signed(vs2[23:16]) 	% $signed(vs1[23:16]);
+				expected_vd_low[31:24] 				= $signed(vs2[31:24]) 	% $signed(vs1[31:24]);
+				expected_vd_low[39:32] 				= $signed(vs2[39:32]) 	% $signed(vs1[39:32]);
+				expected_vd_low[47:40] 				= $signed(vs2[47:40]) 	% $signed(vs1[47:40]);
+				expected_vd_low[55:48] 				= $signed(vs2[55:48]) 	% $signed(vs1[55:48]);
+				expected_vd_low[63:56] 				= $signed(vs2[63:56]) 	% $signed(vs1[63:56]);
+
+			// vremu.v* @ 64
+			#20 current_instruction 				= "vremu.v* @ 64";
+				execution_vector 					= vremu_64;
+				vs2 					= {$random, $random};
+				vs1 					= {$random, $random};
+				
+				expected_vd_low		 				= $unsigned(vs2) % $unsigned(vs1);
+
+			// vremu.v* @ 32
+			#20 current_instruction 				= "vremu.v* @ 32";
+				execution_vector 					= vremu_32;
+				vs2 					= {$random, $random};
+				vs1 					= {$random, $random};
+				
+				expected_vd_low[31:0] 				= $unsigned(vs2[31:0]) 	% $unsigned(vs1[31:0]);
+				expected_vd_low[63:32] 				= $unsigned(vs2[63:32]) % $unsigned(vs1[63:32]);
+
+			// vremu.v* @ 16
+			#20 current_instruction 				= "vremu.v* @ 16";
+				execution_vector 					= vremu_16;
+				vs2 					= {$random, $random};
+				vs1 					= {$random, $random};
+				
+				expected_vd_low[15:0] 				= $unsigned(vs2[15:0]) 	% $unsigned(vs1[15:0]);
+				expected_vd_low[31:16] 				= $unsigned(vs2[31:16]) % $unsigned(vs1[31:16]);
+				expected_vd_low[47:32] 				= $unsigned(vs2[47:32]) % $unsigned(vs1[47:32]);
+				expected_vd_low[63:48] 				= $unsigned(vs2[63:48]) % $unsigned(vs1[63:48]);
+
+			// vrem.v* @ 8
+			#20 current_instruction 				= "vremu.v* @ 8";
+				execution_vector 					= vremu_8;
+				vs2 					= {$random, $random};
+				vs1 					= {$random, $random};
+				
+				expected_vd_low[7:0] 				= $unsigned(vs2[7:0]) 	% $unsigned(vs1[7:0]);
+				expected_vd_low[15:8] 				= $unsigned(vs2[15:8]) 	% $unsigned(vs1[15:8]);
+				expected_vd_low[23:16] 				= $unsigned(vs2[23:16]) % $unsigned(vs1[23:16]);
+				expected_vd_low[31:24] 				= $unsigned(vs2[31:24]) % $unsigned(vs1[31:24]);
+				expected_vd_low[39:32] 				= $unsigned(vs2[39:32]) % $unsigned(vs1[39:32]);
+				expected_vd_low[47:40] 				= $unsigned(vs2[47:40]) % $unsigned(vs1[47:40]);
+				expected_vd_low[55:48] 				= $unsigned(vs2[55:48]) % $unsigned(vs1[55:48]);
+				expected_vd_low[63:56] 				= $unsigned(vs2[63:56]) % $unsigned(vs1[63:56]);
+
+			#20 ;
+
+			#20 $stop;
+		end
+	
+	vector_division_unit vector_division_unit_0
+	(
+		.clock 				(clock),
+		.reset_n 			(reset_n),
+		.execution_vector 	(execution_vector),
+		
+		.vs2 				(vs2),
+		.vs1 				(vs1),
+		
+		.vd_low 			(vd_low)
+	);
+
+endmodule 

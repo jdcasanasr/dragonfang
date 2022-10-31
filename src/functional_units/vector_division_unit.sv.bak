@@ -1,0 +1,196 @@
+module vector_division_unit
+
+import dragonfang_pkg::*;
+
+(
+	input 	logic 				clock,
+	input 	logic 				reset_n,
+	input 	execution_vector_t 	execution_vector,
+
+	input 	logic [63:0] 		source_vector_0,
+	input 	logic [63:0] 		source_vector_1,
+	
+	output 	logic [63:0] 		target_vector
+);
+
+	logic [63:0] 		source_vector_0_ff_0;
+	logic [63:0] 		source_vector_1_ff_0;
+	execution_vector_t 	execution_vector_ff_0;
+	
+	logic [63:0]		target_vector_bus;
+
+	// Manage inter-stage flip-flop's.
+	always_ff @ (posedge clock, negedge reset_n)
+		if (!reset_n)
+			begin
+				source_vector_0_ff_0 	= '0;
+				source_vector_1_ff_0 	= '0;
+				execution_vector_ff_0 	= '0;
+				
+				target_vector			= '0;
+			end
+			
+		else
+			begin
+				source_vector_0_ff_0 	= source_vector_0;
+				source_vector_1_ff_0 	= source_vector_1;
+				execution_vector_ff_0 	= execution_vector;
+				
+				target_vector			= target_vector_bus;
+			end
+	
+	// Deliver the division or remainder according to settings.
+	always_comb
+		if (execution_vector_ff_0.remainder_mode == ENABLED_REMAINDER_MODE) 	// Deliver the remainder.
+			case (execution_vector_ff_0.sign_mode)
+				ENABLED_UNSIGNED_UNSIGNED_MODE 	:
+					case (execution_vector_ff_0.bit_mode)
+						ENABLED_64BIT_MODE :
+							begin
+								target_vector_bus 			= $unsigned(source_vector_0_ff_0) 			% $unsigned(source_vector_1_ff_0);
+							end
+							
+						ENABLED_32BIT_MODE :
+							begin
+								target_vector_bus[31:0] 	= $unsigned(source_vector_0_ff_0[31:0]) 	% $unsigned(source_vector_1_ff_0[31:0]);
+								target_vector_bus[63:32] 	= $unsigned(source_vector_0_ff_0[63:32]) 	% $unsigned(source_vector_1_ff_0[63:32]);
+							end
+							
+						ENABLED_16BIT_MODE :
+							begin
+								target_vector_bus[15:0] 	= $unsigned(source_vector_0_ff_0[15:0]) 	% $unsigned(source_vector_1_ff_0[15:0]);
+								target_vector_bus[31:16] 	= $unsigned(source_vector_0_ff_0[31:16]) 	% $unsigned(source_vector_1_ff_0[31:16]);
+								target_vector_bus[47:32] 	= $unsigned(source_vector_0_ff_0[47:32]) 	% $unsigned(source_vector_1_ff_0[47:32]);
+								target_vector_bus[63:48] 	= $unsigned(source_vector_0_ff_0[63:48]) 	% $unsigned(source_vector_1_ff_0[63:48]);
+							end
+							
+						ENABLED_8BIT_MODE :
+							begin	
+								target_vector_bus[7:0] 		= $unsigned(source_vector_0_ff_0[7:0]) 		% $unsigned(source_vector_1_ff_0[7:0]);
+								target_vector_bus[15:8] 	= $unsigned(source_vector_0_ff_0[15:8])		% $unsigned(source_vector_1_ff_0[15:8]);
+								target_vector_bus[23:16] 	= $unsigned(source_vector_0_ff_0[23:16]) 	% $unsigned(source_vector_1_ff_0[23:16]);
+								target_vector_bus[31:24] 	= $unsigned(source_vector_0_ff_0[31:24]) 	% $unsigned(source_vector_1_ff_0[31:24]);
+								target_vector_bus[39:32] 	= $unsigned(source_vector_0_ff_0[39:32]) 	% $unsigned(source_vector_1_ff_0[39:32]);
+								target_vector_bus[47:40] 	= $unsigned(source_vector_0_ff_0[47:40]) 	% $unsigned(source_vector_1_ff_0[47:40]);
+								target_vector_bus[55:48] 	= $unsigned(source_vector_0_ff_0[55:48]) 	% $unsigned(source_vector_1_ff_0[55:48]);
+								target_vector_bus[63:56] 	= $unsigned(source_vector_0_ff_0[63:56]) 	% $unsigned(source_vector_1_ff_0[63:56]);
+							end
+					endcase
+					
+				ENABLED_SIGNED_SIGNED_MODE 	:
+					case (execution_vector_ff_0.bit_mode)
+						ENABLED_64BIT_MODE :
+							begin
+								target_vector_bus 			= $signed(source_vector_0_ff_0) 			% $signed(source_vector_1_ff_0);
+							end
+							
+						ENABLED_32BIT_MODE :
+							begin
+								target_vector_bus[31:0] 	= $signed(source_vector_0_ff_0[31:0]) 		% $signed(source_vector_1_ff_0[31:0]);
+								target_vector_bus[63:32] 	= $signed(source_vector_0_ff_0[63:32]) 		% $signed(source_vector_1_ff_0[63:32]);
+							end
+							
+						ENABLED_16BIT_MODE :
+							begin
+								target_vector_bus[15:0] 	= $signed(source_vector_0_ff_0[15:0]) 		% $signed(source_vector_1_ff_0[15:0]);
+								target_vector_bus[31:16] 	= $signed(source_vector_0_ff_0[31:16]) 		% $signed(source_vector_1_ff_0[31:16]);
+								target_vector_bus[47:32] 	= $signed(source_vector_0_ff_0[47:32]) 		% $signed(source_vector_1_ff_0[47:32]);
+								target_vector_bus[63:48] 	= $signed(source_vector_0_ff_0[63:48]) 		% $signed(source_vector_1_ff_0[63:48]);
+							end
+							
+						ENABLED_8BIT_MODE :
+							begin	
+								target_vector_bus[7:0] 		= $signed(source_vector_0_ff_0[7:0]) 		% $signed(source_vector_1_ff_0[7:0]);
+								target_vector_bus[15:8] 	= $signed(source_vector_0_ff_0[15:8])		% $signed(source_vector_1_ff_0[15:8]);
+								target_vector_bus[23:16] 	= $signed(source_vector_0_ff_0[23:16]) 		% $signed(source_vector_1_ff_0[23:16]);
+								target_vector_bus[31:24] 	= $signed(source_vector_0_ff_0[31:24]) 		% $signed(source_vector_1_ff_0[31:24]);
+								target_vector_bus[39:32] 	= $signed(source_vector_0_ff_0[39:32]) 		% $signed(source_vector_1_ff_0[39:32]);
+								target_vector_bus[47:40] 	= $signed(source_vector_0_ff_0[47:40]) 		% $signed(source_vector_1_ff_0[47:40]);
+								target_vector_bus[55:48] 	= $signed(source_vector_0_ff_0[55:48]) 		% $signed(source_vector_1_ff_0[55:48]);
+								target_vector_bus[63:56] 	= $signed(source_vector_0_ff_0[63:56]) 		% $signed(source_vector_1_ff_0[63:56]);
+							end
+					endcase
+					
+				default :
+					begin
+						target_vector_bus = '0;
+					end
+			endcase
+		
+		else										// Deliver the division.
+			case (execution_vector_ff_0.sign_mode)
+				ENABLED_UNSIGNED_UNSIGNED_MODE 	:
+					case (execution_vector_ff_0.bit_mode)
+						ENABLED_64BIT_MODE :
+							begin
+								target_vector_bus 			= $unsigned(source_vector_0_ff_0) 			/ $unsigned(source_vector_1_ff_0);
+							end
+							
+						ENABLED_32BIT_MODE :
+							begin
+								target_vector_bus[31:0] 	= $unsigned(source_vector_0_ff_0[31:0]) 	/ $unsigned(source_vector_1_ff_0[31:0]);
+								target_vector_bus[63:32] 	= $unsigned(source_vector_0_ff_0[63:32]) 	/ $unsigned(source_vector_1_ff_0[63:32]);
+							end
+							
+						ENABLED_16BIT_MODE :
+							begin
+								target_vector_bus[15:0] 	= $unsigned(source_vector_0_ff_0[15:0]) 	/ $unsigned(source_vector_1_ff_0[15:0]);
+								target_vector_bus[31:16] 	= $unsigned(source_vector_0_ff_0[31:16]) 	/ $unsigned(source_vector_1_ff_0[31:16]);
+								target_vector_bus[47:32] 	= $unsigned(source_vector_0_ff_0[47:32]) 	/ $unsigned(source_vector_1_ff_0[47:32]);
+								target_vector_bus[63:48] 	= $unsigned(source_vector_0_ff_0[63:48]) 	/ $unsigned(source_vector_1_ff_0[63:48]);
+							end
+							
+						ENABLED_8BIT_MODE :
+							begin	
+								target_vector_bus[7:0] 		= $unsigned(source_vector_0_ff_0[7:0]) 		/ $unsigned(source_vector_1_ff_0[7:0]);
+								target_vector_bus[15:8] 	= $unsigned(source_vector_0_ff_0[15:8])		/ $unsigned(source_vector_1_ff_0[15:8]);
+								target_vector_bus[23:16] 	= $unsigned(source_vector_0_ff_0[23:16]) 	/ $unsigned(source_vector_1_ff_0[23:16]);
+								target_vector_bus[31:24] 	= $unsigned(source_vector_0_ff_0[31:24]) 	/ $unsigned(source_vector_1_ff_0[31:24]);
+								target_vector_bus[39:32] 	= $unsigned(source_vector_0_ff_0[39:32]) 	/ $unsigned(source_vector_1_ff_0[39:32]);
+								target_vector_bus[47:40] 	= $unsigned(source_vector_0_ff_0[47:40]) 	/ $unsigned(source_vector_1_ff_0[47:40]);
+								target_vector_bus[55:48] 	= $unsigned(source_vector_0_ff_0[55:48]) 	/ $unsigned(source_vector_1_ff_0[55:48]);
+								target_vector_bus[63:56] 	= $unsigned(source_vector_0_ff_0[63:56]) 	/ $unsigned(source_vector_1_ff_0[63:56]);
+							end
+					endcase
+					
+				ENABLED_SIGNED_SIGNED_MODE 	:
+					case (execution_vector_ff_0.bit_mode)
+						ENABLED_64BIT_MODE :
+							begin
+								target_vector_bus 			= $signed(source_vector_0_ff_0) 			/ $signed(source_vector_1_ff_0);
+							end
+							
+						ENABLED_32BIT_MODE :
+							begin
+								target_vector_bus[31:0] 	= $signed(source_vector_0_ff_0[31:0]) 		/ $signed(source_vector_1_ff_0[31:0]);
+								target_vector_bus[63:32] 	= $signed(source_vector_0_ff_0[63:32]) 		/ $signed(source_vector_1_ff_0[63:32]);
+							end
+							
+						ENABLED_16BIT_MODE :
+							begin
+								target_vector_bus[15:0] 	= $signed(source_vector_0_ff_0[15:0]) 		/ $signed(source_vector_1_ff_0[15:0]);
+								target_vector_bus[31:16] 	= $signed(source_vector_0_ff_0[31:16]) 		/ $signed(source_vector_1_ff_0[31:16]);
+								target_vector_bus[47:32] 	= $signed(source_vector_0_ff_0[47:32]) 		/ $signed(source_vector_1_ff_0[47:32]);
+								target_vector_bus[63:48] 	= $signed(source_vector_0_ff_0[63:48]) 		/ $signed(source_vector_1_ff_0[63:48]);
+							end
+							
+						ENABLED_8BIT_MODE :
+							begin	
+								target_vector_bus[7:0] 		= $signed(source_vector_0_ff_0[7:0]) 		/ $signed(source_vector_1_ff_0[7:0]);
+								target_vector_bus[15:8] 	= $signed(source_vector_0_ff_0[15:8])		/ $signed(source_vector_1_ff_0[15:8]);
+								target_vector_bus[23:16] 	= $signed(source_vector_0_ff_0[23:16]) 		/ $signed(source_vector_1_ff_0[23:16]);
+								target_vector_bus[31:24] 	= $signed(source_vector_0_ff_0[31:24]) 		/ $signed(source_vector_1_ff_0[31:24]);
+								target_vector_bus[39:32] 	= $signed(source_vector_0_ff_0[39:32]) 		/ $signed(source_vector_1_ff_0[39:32]);
+								target_vector_bus[47:40] 	= $signed(source_vector_0_ff_0[47:40]) 		/ $signed(source_vector_1_ff_0[47:40]);
+								target_vector_bus[55:48] 	= $signed(source_vector_0_ff_0[55:48]) 		/ $signed(source_vector_1_ff_0[55:48]);
+								target_vector_bus[63:56] 	= $signed(source_vector_0_ff_0[63:56]) 		/ $signed(source_vector_1_ff_0[63:56]);
+							end
+					endcase
+					
+				default :
+					begin
+						target_vector_bus = '0;
+					end
+			endcase
+	
+endmodule 

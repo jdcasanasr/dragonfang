@@ -1,0 +1,79 @@
+`timescale 1 ns / 1 ns
+`include "C:/Users/jdani/Documents/dragonfang/hdl/packages/execution_vectors_pkg.sv"
+
+module vector_logic_unit_tb
+
+import 	dragonfang_pkg::*,
+		execution_vectors_pkg::*;
+
+();
+
+	logic 				clock;
+	logic 				reset_n;
+	execution_vector_t 	execution_vector;
+	logic [63:0] 		vs2;
+	logic [63:0] 		vs1;
+	logic [63:0] 		vd;
+	
+	logic [63:0]		expected_vd;
+	string 				instruction;
+	
+	initial
+		begin
+			clock 				= 1'b1;
+			reset_n			 	= 1'b1;
+			execution_vector 	= '0;
+			vs2 				= '0;
+			vs1 				= '0;
+			
+			expected_vd 		= '0;
+			instruction			= "NULL";
+		end
+	
+	always
+		#10 clock = ~clock;
+		
+	always
+		begin
+			#5 	reset_n = 1'b0;
+			#5 	reset_n = 1'b1;
+			
+			#10 instruction 		= "vand.v* @ all";
+				execution_vector 	= vand_all;
+				vs2 				= {$random, $random};
+				vs1					= {$random, $random};
+				
+				expected_vd			= vs2 & vs1;
+				
+			#20 instruction			= "vor.v* @ all";
+				execution_vector	= vor_all;
+				vs2 				= {$random, $random};
+				vs1 				= {$random, $random};
+				
+				expected_vd			= vs2 | vs1;
+				
+			#20	instruction			= "vxor.v* @ all";
+				execution_vector	= vxor_all;
+				vs2 				= {$random, $random};
+				vs1 				= {$random, $random};
+				
+				expected_vd			= vs2 ^ vs1;
+				
+			#20 ;
+			
+			#20 $stop;
+		end
+	
+	vector_logic_unit vector_logic_unit_0
+	(
+		.clock 				(clock),
+		.reset_n 			(reset_n),
+		.execution_vector 	(execution_vector),
+		
+		.vs2 				(vs2),
+		.vs1 				(vs1),
+		
+		.vd 				(vd)
+	);
+	
+endmodule 

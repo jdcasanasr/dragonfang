@@ -1,0 +1,9 @@
+module vector_classify_unit 
+
+	import 	dragonfang_pkg::*,
+			dragonfang_floating_point_pkg::*,
+			ieee_754_2019_pkg::*;
+
+();
+
+endmodule 

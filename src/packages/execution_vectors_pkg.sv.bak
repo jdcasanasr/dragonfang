@@ -1,0 +1,427 @@
+`ifndef EXECUTION_VECTORS_PKG_COMPILED
+	`define EXECUTION_VECTORS_PKG_COMPILED
+		package execution_vectors_pkg;
+			import dragonfang_pkg::*;
+			
+			// vmul.v* (Signed product, return low half).
+			execution_vector_t vmul_64 	= '{default 		: '0,
+											bit_mode 		: ENABLED_64BIT_MODE,
+											sign_mode 		: ENABLED_SIGNED_SIGNED_MODE,
+											low_half_mode 	: ENABLED_LOW_HALF_MODE};
+											
+			execution_vector_t vmul_32 	= '{default 		: '0,
+											bit_mode 		: ENABLED_32BIT_MODE,
+											sign_mode 		: ENABLED_SIGNED_SIGNED_MODE,
+											low_half_mode 	: ENABLED_LOW_HALF_MODE};
+											
+			execution_vector_t vmul_16 	= '{default 		: '0,
+											bit_mode 		: ENABLED_16BIT_MODE,
+											sign_mode 		: ENABLED_SIGNED_SIGNED_MODE,
+											low_half_mode 	: ENABLED_LOW_HALF_MODE};
+											
+			execution_vector_t vmul_8 	= '{default 		: '0,
+											bit_mode 		: ENABLED_8BIT_MODE,
+											sign_mode 		: ENABLED_SIGNED_SIGNED_MODE,
+											low_half_mode 	: ENABLED_LOW_HALF_MODE};
+
+			// vmulh.v* (Signed product, return high half).
+			execution_vector_t vmulh_64 = '{default 		: '0,
+											bit_mode 		: ENABLED_64BIT_MODE,
+											sign_mode 		: ENABLED_SIGNED_SIGNED_MODE,
+											high_half_mode 	: ENABLED_HIGH_HALF_MODE};
+											
+			execution_vector_t vmulh_32 = '{default 		: '0,
+											bit_mode 		: ENABLED_32BIT_MODE,
+											sign_mode 		: ENABLED_SIGNED_SIGNED_MODE,
+											high_half_mode 	: ENABLED_HIGH_HALF_MODE};
+											
+			execution_vector_t vmulh_16 = '{default 		: '0,
+											bit_mode 		: ENABLED_16BIT_MODE,
+											sign_mode 		: ENABLED_SIGNED_SIGNED_MODE,
+											high_half_mode 	: ENABLED_HIGH_HALF_MODE};
+											
+			execution_vector_t vmulh_8 = '{default 			: '0,
+											bit_mode 		: ENABLED_8BIT_MODE,
+											sign_mode 		: ENABLED_SIGNED_SIGNED_MODE,
+											high_half_mode 	: ENABLED_HIGH_HALF_MODE};
+
+			
+			// vmulhu.v* (Unsigned product, return high half).
+			execution_vector_t vmulhu_64 = '{default 		: '0,
+											bit_mode 		: ENABLED_64BIT_MODE,
+											sign_mode 		: ENABLED_UNSIGNED_UNSIGNED_MODE,
+											high_half_mode 	: ENABLED_HIGH_HALF_MODE};
+											
+			execution_vector_t vmulhu_32 = '{default 		: '0,
+											bit_mode 		: ENABLED_32BIT_MODE,
+											sign_mode 		: ENABLED_UNSIGNED_UNSIGNED_MODE,
+											high_half_mode 	: ENABLED_HIGH_HALF_MODE};
+											
+			execution_vector_t vmulhu_16 = '{default 		: '0,
+											bit_mode 		: ENABLED_16BIT_MODE,
+											sign_mode 		: ENABLED_UNSIGNED_UNSIGNED_MODE,
+											high_half_mode 	: ENABLED_HIGH_HALF_MODE};
+											
+			execution_vector_t vmulhu_8 = '{default 		: '0,
+											bit_mode 		: ENABLED_8BIT_MODE,
+											sign_mode 		: ENABLED_UNSIGNED_UNSIGNED_MODE,
+											high_half_mode 	: ENABLED_HIGH_HALF_MODE};
+
+			// vmulhsu.v* (Signed-unsigned product, return high half).
+			execution_vector_t vmulhsu_64 = '{default 		: '0,
+											bit_mode 		: ENABLED_64BIT_MODE,
+											sign_mode 		: ENABLED_SIGNED_UNSIGNED_MODE,
+											high_half_mode 	: ENABLED_HIGH_HALF_MODE};
+											
+			execution_vector_t vmulhsu_32 = '{default 		: '0,
+											bit_mode 		: ENABLED_32BIT_MODE,
+											sign_mode 		: ENABLED_SIGNED_UNSIGNED_MODE,
+											high_half_mode 	: ENABLED_HIGH_HALF_MODE};
+											
+			execution_vector_t vmulhsu_16 = '{default 		: '0,
+											bit_mode 		: ENABLED_16BIT_MODE,
+											sign_mode 		: ENABLED_SIGNED_UNSIGNED_MODE,
+											high_half_mode 	: ENABLED_HIGH_HALF_MODE};
+											
+			execution_vector_t vmulhsu_8 = '{default 		: '0,
+											bit_mode 		: ENABLED_8BIT_MODE,
+											sign_mode 		: ENABLED_SIGNED_UNSIGNED_MODE,
+											high_half_mode 	: ENABLED_HIGH_HALF_MODE};
+
+			
+			// vwmul.v* (Signed, widening product).
+			execution_vector_t vwmul_64 = '{default 		: '0,
+											bit_mode 		: ENABLED_64BIT_MODE,
+											sign_mode 		: ENABLED_SIGNED_SIGNED_MODE,
+											widening_mode 	: ENABLED_WIDENING_MODE};
+
+			execution_vector_t vwmul_32 = '{default 		: '0,
+											bit_mode 		: ENABLED_32BIT_MODE,
+											sign_mode 		: ENABLED_SIGNED_SIGNED_MODE,
+											widening_mode 	: ENABLED_WIDENING_MODE};
+											
+			execution_vector_t vwmul_16 = '{default 		: '0,
+											bit_mode 		: ENABLED_16BIT_MODE,
+											sign_mode 		: ENABLED_SIGNED_SIGNED_MODE,
+											widening_mode 	: ENABLED_WIDENING_MODE};
+		
+			execution_vector_t vwmul_8 = '{default 			: '0,
+											bit_mode 		: ENABLED_8BIT_MODE,
+											sign_mode 		: ENABLED_SIGNED_SIGNED_MODE,
+											widening_mode 	: ENABLED_WIDENING_MODE};
+		
+	
+			// vwmulu.v* (Unsigned, widening product).
+			execution_vector_t vwmulu_64 = '{default 		: '0,
+											bit_mode 		: ENABLED_64BIT_MODE,
+											sign_mode 		: ENABLED_UNSIGNED_UNSIGNED_MODE,
+											widening_mode 	: ENABLED_WIDENING_MODE};
+
+			execution_vector_t vwmulu_32 = '{default 		: '0,
+											bit_mode 		: ENABLED_32BIT_MODE,
+											sign_mode 		: ENABLED_UNSIGNED_UNSIGNED_MODE,
+											widening_mode 	: ENABLED_WIDENING_MODE};
+											
+			execution_vector_t vwmulu_16 = '{default 		: '0,
+											bit_mode 		: ENABLED_16BIT_MODE,
+											sign_mode 		: ENABLED_UNSIGNED_UNSIGNED_MODE,
+											widening_mode 	: ENABLED_WIDENING_MODE};
+											
+			execution_vector_t vwmulu_8 = '{default 		: '0,
+											bit_mode 		: ENABLED_8BIT_MODE,
+											sign_mode 		: ENABLED_UNSIGNED_UNSIGNED_MODE,
+											widening_mode 	: ENABLED_WIDENING_MODE};
+
+			// vwmulsu.v* (Signed-unsigned, widening product).
+			execution_vector_t vwmulsu_64 ='{default 		: '0,
+											bit_mode 		: ENABLED_64BIT_MODE,
+											sign_mode 		: ENABLED_SIGNED_UNSIGNED_MODE,
+											widening_mode 	: ENABLED_WIDENING_MODE};
+											
+			execution_vector_t vwmulsu_32 ='{default 		: '0,
+											bit_mode 		: ENABLED_32BIT_MODE,
+											sign_mode 		: ENABLED_SIGNED_UNSIGNED_MODE,
+											widening_mode 	: ENABLED_WIDENING_MODE};
+											
+			execution_vector_t vwmulsu_16 ='{default 		: '0,
+											bit_mode 		: ENABLED_16BIT_MODE,
+											sign_mode 		: ENABLED_SIGNED_UNSIGNED_MODE,
+											widening_mode 	: ENABLED_WIDENING_MODE};
+											
+			execution_vector_t vwmulsu_8 ='{default 		: '0,
+											bit_mode 		: ENABLED_8BIT_MODE,
+											sign_mode 		: ENABLED_SIGNED_UNSIGNED_MODE,
+											widening_mode 	: ENABLED_WIDENING_MODE};
+			
+											
+			// vdivu.v* (Unsigned division).
+			execution_vector_t vdivu_64 = '{default 		: '0,
+											bit_mode 		: ENABLED_64BIT_MODE,
+											sign_mode 		: ENABLED_UNSIGNED_UNSIGNED_MODE};
+											
+			execution_vector_t vdivu_32 = '{default 		: '0,
+											bit_mode 		: ENABLED_32BIT_MODE,
+											sign_mode 		: ENABLED_UNSIGNED_UNSIGNED_MODE};
+											
+			execution_vector_t vdivu_16 = '{default 		: '0,
+											bit_mode 		: ENABLED_16BIT_MODE,
+											sign_mode 		: ENABLED_UNSIGNED_UNSIGNED_MODE};
+											
+			execution_vector_t vdivu_8 	= '{default 		: '0,
+											bit_mode 		: ENABLED_8BIT_MODE,
+											sign_mode 		: ENABLED_UNSIGNED_UNSIGNED_MODE};
+
+			// vdiv.v* (Signed division).
+			execution_vector_t vdiv_64 	= '{default 		: '0,
+											bit_mode 		: ENABLED_64BIT_MODE,
+											sign_mode 		: ENABLED_SIGNED_SIGNED_MODE};
+											
+			execution_vector_t vdiv_32 	= '{default 		: '0,
+											bit_mode 		: ENABLED_32BIT_MODE,
+											sign_mode 		: ENABLED_SIGNED_SIGNED_MODE};
+											
+			execution_vector_t vdiv_16 	= '{default 		: '0,
+											bit_mode 		: ENABLED_16BIT_MODE,
+											sign_mode 		: ENABLED_SIGNED_SIGNED_MODE};
+											
+			execution_vector_t vdiv_8 	= '{default 		: '0,
+											bit_mode 		: ENABLED_8BIT_MODE,
+											sign_mode 		: ENABLED_SIGNED_SIGNED_MODE};
+											
+											
+			// vremu.v* (Unsigned remainder).
+			execution_vector_t vremu_64 = '{default 		: '0,
+											bit_mode 		: ENABLED_64BIT_MODE,
+											sign_mode 		: ENABLED_UNSIGNED_UNSIGNED_MODE,
+											remainder_mode 	: ENABLED_REMAINDER_MODE};
+
+			execution_vector_t vremu_32 = '{default 		: '0,
+											bit_mode 		: ENABLED_32BIT_MODE,
+											sign_mode 		: ENABLED_UNSIGNED_UNSIGNED_MODE,
+											remainder_mode 	: ENABLED_REMAINDER_MODE};
+											
+			execution_vector_t vremu_16 = '{default 		: '0,
+											bit_mode 		: ENABLED_16BIT_MODE,
+											sign_mode 		: ENABLED_UNSIGNED_UNSIGNED_MODE,
+											remainder_mode 	: ENABLED_REMAINDER_MODE};
+											
+			execution_vector_t vremu_8 	= '{default 		: '0,
+											bit_mode 		: ENABLED_8BIT_MODE,
+											sign_mode 		: ENABLED_UNSIGNED_UNSIGNED_MODE,
+											remainder_mode 	: ENABLED_REMAINDER_MODE};
+			
+			// vrem.v* (Signed remainder).
+			execution_vector_t vrem_64 = '{default 		: '0,
+											bit_mode 		: ENABLED_64BIT_MODE,
+											sign_mode 		: ENABLED_SIGNED_SIGNED_MODE,
+											remainder_mode 	: ENABLED_REMAINDER_MODE};
+
+			execution_vector_t vrem_32 = '{default 		: '0,
+											bit_mode 		: ENABLED_32BIT_MODE,
+											sign_mode 		: ENABLED_SIGNED_SIGNED_MODE,
+											remainder_mode 	: ENABLED_REMAINDER_MODE};
+											
+			execution_vector_t vrem_16 = '{default 		: '0,
+											bit_mode 		: ENABLED_16BIT_MODE,
+											sign_mode 		: ENABLED_SIGNED_SIGNED_MODE,
+											remainder_mode 	: ENABLED_REMAINDER_MODE};
+											
+			execution_vector_t vrem_8 	= '{default 		: '0,
+											bit_mode 		: ENABLED_8BIT_MODE,
+											sign_mode 		: ENABLED_SIGNED_SIGNED_MODE,
+											remainder_mode 	: ENABLED_REMAINDER_MODE};
+								
+			// vmacc.v* (Multiply-add, overwrite addend).
+			execution_vector_t vmacc_64 = '{default 		: '0,
+											bit_mode 		: ENABLED_64BIT_MODE,
+											sign_mode 		: ENABLED_UNSIGNED_UNSIGNED_MODE,
+											overwrite_mode 	: ENABLED_OVERWRITE_SECOND_OPERAND_MODE};
+											
+			execution_vector_t vmacc_32 = '{default 		: '0,
+											bit_mode 		: ENABLED_32BIT_MODE,
+											sign_mode 		: ENABLED_UNSIGNED_UNSIGNED_MODE,
+											overwrite_mode 	: ENABLED_OVERWRITE_SECOND_OPERAND_MODE};
+											
+			execution_vector_t vmacc_16 = '{default 		: '0,
+											bit_mode 		: ENABLED_16BIT_MODE,
+											sign_mode 		: ENABLED_UNSIGNED_UNSIGNED_MODE,
+											overwrite_mode 	: ENABLED_OVERWRITE_SECOND_OPERAND_MODE};
+											
+			execution_vector_t vmacc_8 	= '{default 		: '0,
+											bit_mode 		: ENABLED_8BIT_MODE,
+											sign_mode 		: ENABLED_UNSIGNED_UNSIGNED_MODE,
+											overwrite_mode 	: ENABLED_OVERWRITE_SECOND_OPERAND_MODE};
+											
+			// vmadd.v* (Multiply-add, overwrite multiplicand).
+			execution_vector_t vmadd_64 = '{default 		: '0,
+											bit_mode 		: ENABLED_64BIT_MODE,
+											sign_mode 		: ENABLED_UNSIGNED_UNSIGNED_MODE,
+											overwrite_mode 	: ENABLED_OVERWRITE_DESTINATION_MODE};
+											
+			execution_vector_t vmadd_32 = '{default 		: '0,
+											bit_mode 		: ENABLED_32BIT_MODE,
+											sign_mode 		: ENABLED_UNSIGNED_UNSIGNED_MODE,
+											overwrite_mode 	: ENABLED_OVERWRITE_DESTINATION_MODE};
+											
+			execution_vector_t vmadd_16 = '{default 		: '0,
+											bit_mode 		: ENABLED_16BIT_MODE,
+											sign_mode 		: ENABLED_UNSIGNED_UNSIGNED_MODE,
+											overwrite_mode 	: ENABLED_OVERWRITE_DESTINATION_MODE};
+											
+			execution_vector_t vmadd_8 	= '{default 		: '0,
+											bit_mode 		: ENABLED_8BIT_MODE,
+											sign_mode 		: ENABLED_UNSIGNED_UNSIGNED_MODE,
+											overwrite_mode 	: ENABLED_OVERWRITE_DESTINATION_MODE};
+			
+			// vnmsac.v* (Multiply-sub, overwrite minuend).
+			execution_vector_t vnmsac_64 = '{default 			: '0,
+											bit_mode 			: ENABLED_64BIT_MODE,
+											sign_mode 			: ENABLED_UNSIGNED_UNSIGNED_MODE,
+											overwrite_mode 		: ENABLED_OVERWRITE_SECOND_OPERAND_MODE,
+											subtraction_mode 	: ENABLED_SUBTRACTION_MODE};
+											
+			execution_vector_t vnmsac_32 = '{default 			: '0,
+											bit_mode 			: ENABLED_32BIT_MODE,
+											sign_mode 			: ENABLED_UNSIGNED_UNSIGNED_MODE,
+											overwrite_mode 		: ENABLED_OVERWRITE_SECOND_OPERAND_MODE,
+											subtraction_mode 	: ENABLED_SUBTRACTION_MODE};
+											
+			execution_vector_t vnmsac_16 = '{default 			: '0,
+											bit_mode 			: ENABLED_16BIT_MODE,
+											sign_mode 			: ENABLED_UNSIGNED_UNSIGNED_MODE,
+											overwrite_mode 		: ENABLED_OVERWRITE_SECOND_OPERAND_MODE,
+											subtraction_mode 	: ENABLED_SUBTRACTION_MODE};
+											
+			execution_vector_t vnmsac_8 = '{default 			: '0,
+											bit_mode 			: ENABLED_8BIT_MODE,
+											sign_mode 			: ENABLED_UNSIGNED_UNSIGNED_MODE,
+											overwrite_mode 		: ENABLED_OVERWRITE_SECOND_OPERAND_MODE,
+											subtraction_mode 	: ENABLED_SUBTRACTION_MODE};
+											
+			// vnmsub.v* (Multiply-sub, overwrite multiplicand).
+			execution_vector_t vnmsub_64 = '{default 			: '0,
+											bit_mode 			: ENABLED_64BIT_MODE,
+											sign_mode 			: ENABLED_UNSIGNED_UNSIGNED_MODE,
+											overwrite_mode 		: ENABLED_OVERWRITE_DESTINATION_MODE,
+											subtraction_mode 	: ENABLED_SUBTRACTION_MODE};
+											
+			execution_vector_t vnmsub_32 = '{default 			: '0,
+											bit_mode 			: ENABLED_32BIT_MODE,
+											sign_mode 			: ENABLED_UNSIGNED_UNSIGNED_MODE,
+											overwrite_mode 		: ENABLED_OVERWRITE_DESTINATION_MODE,
+											subtraction_mode 	: ENABLED_SUBTRACTION_MODE};
+											
+			execution_vector_t vnmsub_16 = '{default 			: '0,
+											bit_mode 			: ENABLED_16BIT_MODE,
+											sign_mode 			: ENABLED_UNSIGNED_UNSIGNED_MODE,
+											overwrite_mode 		: ENABLED_OVERWRITE_DESTINATION_MODE,
+											subtraction_mode 	: ENABLED_SUBTRACTION_MODE};
+											
+			execution_vector_t vnmsub_8 = '{default 			: '0,
+											bit_mode 			: ENABLED_8BIT_MODE,
+											sign_mode 			: ENABLED_UNSIGNED_UNSIGNED_MODE,
+											overwrite_mode 		: ENABLED_OVERWRITE_DESTINATION_MODE,
+											subtraction_mode 	: ENABLED_SUBTRACTION_MODE};
+			
+			// vwmaccu.v* (Widening, unsigned, multiply-add, overwrite addend).
+			execution_vector_t vwmaccu_64 	= '{default 		: '0,
+												bit_mode 		: ENABLED_64BIT_MODE,
+												sign_mode 		: ENABLED_UNSIGNED_UNSIGNED_MODE,
+												overwrite_mode 	: ENABLED_OVERWRITE_SECOND_OPERAND_MODE,
+												widening_mode 	: ENABLED_WIDENING_MODE};
+											
+			execution_vector_t vwmaccu_32 	= '{default 		: '0,
+												bit_mode 		: ENABLED_32BIT_MODE,
+												sign_mode 		: ENABLED_UNSIGNED_UNSIGNED_MODE,
+												overwrite_mode 	: ENABLED_OVERWRITE_SECOND_OPERAND_MODE,
+												widening_mode 	: ENABLED_WIDENING_MODE};
+												
+			execution_vector_t vwmaccu_16 	= '{default 		: '0,
+												bit_mode 		: ENABLED_16BIT_MODE,
+												sign_mode 		: ENABLED_UNSIGNED_UNSIGNED_MODE,
+												overwrite_mode 	: ENABLED_OVERWRITE_SECOND_OPERAND_MODE,
+												widening_mode 	: ENABLED_WIDENING_MODE};
+												
+			execution_vector_t vwmaccu_8 	= '{default 		: '0,
+												bit_mode 		: ENABLED_8BIT_MODE,
+												sign_mode 		: ENABLED_UNSIGNED_UNSIGNED_MODE,
+												overwrite_mode 	: ENABLED_OVERWRITE_SECOND_OPERAND_MODE,
+												widening_mode 	: ENABLED_WIDENING_MODE};
+											
+			// vwmacc.v* (Widening, signed, multiply-add, overwrite addend).
+			execution_vector_t vwmacc_64 	= '{default 		: '0,
+												bit_mode 		: ENABLED_64BIT_MODE,
+												sign_mode 		: ENABLED_SIGNED_SIGNED_MODE,
+												overwrite_mode 	: ENABLED_OVERWRITE_SECOND_OPERAND_MODE,
+												widening_mode 	: ENABLED_WIDENING_MODE};
+											
+			execution_vector_t vwmacc_32 	= '{default 		: '0,
+												bit_mode 		: ENABLED_32BIT_MODE,
+												sign_mode 		: ENABLED_SIGNED_SIGNED_MODE,
+												overwrite_mode 	: ENABLED_OVERWRITE_SECOND_OPERAND_MODE,
+												widening_mode 	: ENABLED_WIDENING_MODE};
+												
+			execution_vector_t vwmacc_16 	= '{default 		: '0,
+												bit_mode 		: ENABLED_16BIT_MODE,
+												sign_mode 		: ENABLED_SIGNED_SIGNED_MODE,
+												overwrite_mode 	: ENABLED_OVERWRITE_SECOND_OPERAND_MODE,
+												widening_mode 	: ENABLED_WIDENING_MODE};
+												
+			execution_vector_t vwmacc_8 	= '{default 		: '0,
+												bit_mode 		: ENABLED_8BIT_MODE,
+												sign_mode 		: ENABLED_SIGNED_SIGNED_MODE,
+												overwrite_mode 	: ENABLED_OVERWRITE_SECOND_OPERAND_MODE,
+												widening_mode 	: ENABLED_WIDENING_MODE};
+			
+			// vwmaccsu.v* (Widening, signed-unsigned, multiply-add, overwrite addend).
+			execution_vector_t vwmaccsu_64 	= '{default 		: '0,
+												bit_mode 		: ENABLED_64BIT_MODE,
+												sign_mode 		: ENABLED_SIGNED_UNSIGNED_MODE,
+												overwrite_mode 	: ENABLED_OVERWRITE_SECOND_OPERAND_MODE,
+												widening_mode 	: ENABLED_WIDENING_MODE};
+											
+			execution_vector_t vwmaccsu_32 	= '{default 		: '0,
+												bit_mode 		: ENABLED_32BIT_MODE,
+												sign_mode 		: ENABLED_SIGNED_UNSIGNED_MODE,
+												overwrite_mode 	: ENABLED_OVERWRITE_SECOND_OPERAND_MODE,
+												widening_mode 	: ENABLED_WIDENING_MODE};
+											
+			execution_vector_t vwmaccsu_16 	= '{default 		: '0,
+												bit_mode 		: ENABLED_16BIT_MODE,
+												sign_mode 		: ENABLED_SIGNED_UNSIGNED_MODE,
+												overwrite_mode 	: ENABLED_OVERWRITE_SECOND_OPERAND_MODE,
+												widening_mode 	: ENABLED_WIDENING_MODE};
+												
+			execution_vector_t vwmaccsu_8 	= '{default 		: '0,
+												bit_mode 		: ENABLED_8BIT_MODE,
+												sign_mode 		: ENABLED_SIGNED_UNSIGNED_MODE,
+												overwrite_mode 	: ENABLED_OVERWRITE_SECOND_OPERAND_MODE,
+												widening_mode 	: ENABLED_WIDENING_MODE};
+			
+			// vwmaccus.v* (Widening, unsigned-signed, multiply-add, overwrite addend).
+			execution_vector_t vwmaccus_64 	= '{default 		: '0,
+												bit_mode 		: ENABLED_64BIT_MODE,
+												sign_mode 		: ENABLED_UNSIGNED_SIGNED_MODE,
+												overwrite_mode 	: ENABLED_OVERWRITE_SECOND_OPERAND_MODE,
+												widening_mode 	: ENABLED_WIDENING_MODE};
+												
+												
+			execution_vector_t vwmaccus_32 	= '{default 		: '0,
+												bit_mode 		: ENABLED_32BIT_MODE,
+												sign_mode 		: ENABLED_UNSIGNED_SIGNED_MODE,
+												overwrite_mode 	: ENABLED_OVERWRITE_SECOND_OPERAND_MODE,
+												widening_mode 	: ENABLED_WIDENING_MODE};
+												
+			execution_vector_t vwmaccus_16 	= '{default 		: '0,
+												bit_mode 		: ENABLED_16BIT_MODE,
+												sign_mode 		: ENABLED_UNSIGNED_SIGNED_MODE,
+												overwrite_mode 	: ENABLED_OVERWRITE_SECOND_OPERAND_MODE,
+												widening_mode 	: ENABLED_WIDENING_MODE};
+												
+			execution_vector_t vwmaccus_8 	= '{default 		: '0,
+												bit_mode 		: ENABLED_8BIT_MODE,
+												sign_mode 		: ENABLED_UNSIGNED_SIGNED_MODE,
+												overwrite_mode 	: ENABLED_OVERWRITE_SECOND_OPERAND_MODE,
+												widening_mode 	: ENABLED_WIDENING_MODE};
+		endpackage
+`endif

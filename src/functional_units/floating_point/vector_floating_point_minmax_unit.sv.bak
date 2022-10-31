@@ -1,0 +1,136 @@
+module vector_floating_point_minmax_unit
+
+import 	dragonfang_pkg::*,
+		dragonfang_floating_point_pkg::*;
+
+(
+	input 	logic 				clock,
+	input 	logic 				reset_n,
+	
+	input 	execution_vector_t 	execution_vector,
+	
+	input 	logic [63:0] 		vs2,
+	input 	logic [63:0] 		vs1,
+	
+	output 	logic [63:0] 		vd_low
+);
+
+	logic [63:0] 		vs2_ff_0;
+	logic [63:0] 		vs1_ff_0;
+	execution_vector_t 	execution_vector_ff_0;
+
+	logic [63:0] 		vd_low_bus;
+	
+	float_t [1:0] 		vs2_float;
+	float_t [1:0] 		vs1_float;
+	
+	double_t 			vs2_double;
+	double_t			vs1_double;
+	
+	float_t [1:0]		vd_float_maximum;
+	float_t [1:0]		vd_float_minimum;
+	
+	double_t 			vd_double_maximum;
+	double_t			vd_double_minimum;
+	
+	always_ff @ (posedge clock, negedge reset_n)
+		if (!reset_n)
+			begin
+				vs2_ff_0 				<= '0;
+				vs1_ff_0 				<= '0;
+				
+				execution_vector_ff_0 	<= '0;
+				
+				vd_low					<= '0;
+			end
+			
+		else
+			begin
+				vs2_ff_0 				<= vs2;
+				vs1_ff_0 				<= vs1;
+				
+				execution_vector_ff_0 	<= execution_vector;
+				
+				vd_low 					<= vd_low_bus;
+			end
+
+	always_comb
+		begin
+			vs2_float[0] 	= pack_to_float(vs2_ff_0[31:0]);
+			vs2_float[1] 	= pack_to_float(vs2_ff_0[63:32]);
+			
+			vs1_float[0] 	= pack_to_float(vs1_ff_0[31:0]);
+			vs1_float[1] 	= pack_to_float(vs1_ff_0[63:32]);
+			
+			vs2_double 		= pack_to_double(vs2_ff_0);
+			vs1_double 		= pack_to_double(vs1_ff_0);
+		end
+		
+	always_comb
+		if (vs2_float[0].exponent > vs1_float[0])
+			begin
+				vd_float_maximum[0] = vs2_float[0];
+				vd_float_minimum[0] = vs1_float[0];
+			end
+			
+		else
+			begin
+				vd_float_maximum[0] = vs1_float[0];
+				vd_float_minimum[0] = vs2_float[0];
+			end
+			
+	always_comb
+		if (vs2_float[1].exponent > vs1_float[1])
+			begin
+				vd_float_maximum[1] = vs2_float[1];
+				vd_float_minimum[1] = vs1_float[1];
+			end
+			
+		else
+			begin
+				vd_float_maximum[1] = vs1_float[1];
+				vd_float_minimum[1] = vs2_float[1];
+			end
+			
+	always_comb
+		if (vs2_double.exponent > vs1_double.exponent)
+			begin
+				vd_double_maximum = vs2_double;
+				vd_double_minimum = vs1_double;
+			end
+			
+		else
+			begin
+				vd_double_maximum = vs1_double;
+				vd_double_minimum = vs2_double;
+			end
+			
+	always_comb
+		if (execution_vector_ff_0.maximum_mode == ENABLED_MAXIMUM_MODE)
+			case (execution_vector_ff_0.bit_mode)
+				ENABLED_64BIT_MODE 	: vd_low_bus = vd_double_maximum;
+				ENABLED_32BIT_MODE 	:
+					begin
+						vd_low_bus[31:0] 	= vd_float_maximum[0];
+						vd_low_bus[63:32] 	= vd_float_maximum[1];
+					end
+				
+				default 			: vd_low_bus = '0;
+			endcase
+		
+		else if (execution_vector_ff_0.minimum_mode == ENABLED_MINIMUM_MODE)
+			case (execution_vector_ff_0.bit_mode)
+				ENABLED_64BIT_MODE 	: vd_low_bus = vd_double_minimum;
+				ENABLED_32BIT_MODE 	:
+					begin
+						vd_low_bus[31:0] 	= vd_float_minimum[0];
+						vd_low_bus[63:32] 	= vd_float_minimum[1];
+					end
+				
+				default 			: vd_low_bus = '0;
+			endcase
+		
+		else
+			vd_low_bus = '0;
+			
+endmodule 

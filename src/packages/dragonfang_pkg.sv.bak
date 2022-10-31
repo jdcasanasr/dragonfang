@@ -1,0 +1,37 @@
+`ifndef DRAGONFANG_PKG_COMPILED
+	`define DRAGONFANG_PKG_COMPILED
+		package dragonfang_pkg;
+
+			typedef enum logic [1:0] 	{ENABLED_64BIT_MODE, ENABLED_32BIT_MODE, ENABLED_16BIT_MODE, ENABLED_8BIT_MODE} 																					bit_mode_t;
+			typedef enum logic [1:0] 	{ENABLED_UNSIGNED_UNSIGNED_MODE, ENABLED_UNSIGNED_SIGNED_MODE, ENABLED_SIGNED_UNSIGNED_MODE, ENABLED_SIGNED_SIGNED_MODE} 											sign_mode_t;
+			typedef enum logic [1:0] 	{DISABLED_OVERWRITE_MODE = '0, ENABLED_OVERWRITE_FIRST_OPERAND_MODE, ENABLED_OVERWRITE_SECOND_OPERAND_MODE, ENABLED_OVERWRITE_DESTINATION_MODE} 					overwrite_mode_t;
+			typedef enum logic [2:0] 	{DISABLED_COMPARISON_MODE = '0, ENABLED_EQUAL_MODE, ENABLED_NOT_EQUAL_MODE,ENABLED_LESS_THAN_MODE, ENABLED_LESS_THAN_OR_EQUAL_MODE, ENABLED_GREATER_THAN_MODE}	 	comparison_mode_t;
+			typedef enum logic 			{DISABLED_MINIMUM_MODE = '0, ENABLED_MINIMUM_MODE} 																													minimum_mode_t;
+			typedef enum logic 			{DISABLED_MAXIMUM_MODE = '0, ENABLED_MAXIMUM_MODE} 																													maximum_mode_t;
+			typedef enum logic 			{DISABLED_LOW_HALF_MODE = '0, ENABLED_LOW_HALF_MODE} 																												low_half_mode_t;
+			typedef enum logic 			{DISABLED_HIGH_HALF_MODE = '0, ENABLED_HIGH_HALF_MODE} 																												high_half_mode_t;
+			typedef enum logic			{DISABLED_REMAINDER_MODE = '0, ENABLED_REMAINDER_MODE} 																												remainder_mode_t;
+			typedef enum logic 			{DISABLED_WIDENING_MODE = '0, ENABLED_WIDENING_MODE} 																												widening_mode_t;
+			typedef enum logic 			{DISABLED_NARROWING_MODE = '0, ENABLED_NARROWING_MODE} 																												narrowing_mode_t;
+			typedef enum logic 			{DISABLED_SUBTRACTION_MODE = '0, ENABLED_SUBTRACTION_MODE} 																											subtraction_mode_t;
+		
+			typedef struct packed
+			{
+				bit_mode_t 			bit_mode;
+				sign_mode_t 		sign_mode;
+				comparison_mode_t 	comparison_mode;
+				minimum_mode_t		minimum_mode;
+				maximum_mode_t		maximum_mode;
+				low_half_mode_t 	low_half_mode;
+				high_half_mode_t 	high_half_mode;
+				remainder_mode_t 	remainder_mode;
+				widening_mode_t 	widening_mode;
+				narrowing_mode_t 	narrowing_mode;
+				subtraction_mode_t 	subtraction_mode;
+				
+				overwrite_mode_t 	overwrite_mode;
+				
+			} execution_vector_t;
+			
+		endpackage
+`endif

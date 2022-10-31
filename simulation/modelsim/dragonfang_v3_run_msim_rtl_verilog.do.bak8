@@ -1,0 +1,22 @@
+transcript on
+if {[file exists rtl_work]} {
+	vdel -lib rtl_work -all
+}
+vlib rtl_work
+vmap work rtl_work
+
+vlog -sv -work work +incdir+D:/dragonfang_v3/src/packages {D:/dragonfang_v3/src/packages/dragonfang_pkg.sv}
+vlog -sv -work work +incdir+D:/dragonfang_v3/src/pipeline_stages/execution {D:/dragonfang_v3/src/pipeline_stages/execution/selector.sv}
+vlog -sv -work work +incdir+D:/dragonfang_v3/src/packages {D:/dragonfang_v3/src/packages/riscv_v_pkg.sv}
+vlog -sv -work work +incdir+D:/dragonfang_v3/src/pipeline_stages/execution {D:/dragonfang_v3/src/pipeline_stages/execution/execution.sv}
+vlog -sv -work work +incdir+D:/dragonfang_v3/src/functional_units {D:/dragonfang_v3/src/functional_units/vector_logic_unit.sv}
+vlog -sv -work work +incdir+D:/dragonfang_v3/src/pipeline_stages/execution {D:/dragonfang_v3/src/pipeline_stages/execution/bypass_network.sv}
+
+vlog -sv -work work +incdir+D:/dragonfang_v3/sim/testbenches {D:/dragonfang_v3/sim/testbenches/execution_tb.sv}
+
+vsim -t 1ps -L altera_ver -L lpm_ver -L sgate_ver -L altera_mf_ver -L altera_lnsim_ver -L cycloneive_ver -L rtl_work -L work -voptargs="+acc"  execution_tb
+
+add wave *
+view structure
+view signals
+run -all

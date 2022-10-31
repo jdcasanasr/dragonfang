@@ -1,0 +1,77 @@
+module vector_floating_point_square_root_unit
+
+import 	dragonfang_pkg::*,
+		dragonfang_floating_point_pkg::*;
+		
+(
+	input 	logic 				clock,
+	input 	logic 				reset_n,
+	input 	execution_vector_t 	execution_vector,
+	
+	input 	logic [63:0] 		vs2,
+	
+	output 	logic [63:0]		vd_low
+);
+
+	logic [63:0] 		vs2_ff_0;
+	execution_vector_t 	execution_vector_ff_0;
+	
+	logic [63:0] 		vd_low_bus;
+
+	float_t [1:0] 	vs2_float;
+	double_t 		vs2_double;
+	
+	// Manage inter-stage flip-flop's.
+	always_ff @ (posedge clock, negedge reset_n)
+		if (!reset_n)
+			begin
+				vs2_ff_0 				<= '0;
+				execution_vector_ff_0 	<= '0;
+				
+				vd_low 					<= '0;
+			end
+	
+		else
+			begin
+				vs2_ff_0 				<= vs2;
+				execution_vector_ff_0 	<= execution_vector;
+				
+				vd_low 					<= vd_low_bus;
+			end
+			
+	// Pack operands into float_t and double_t structures.
+	always_comb
+		begin
+			vs2_float[0] 	= pack_to_float(vs2_ff_0[31:0]);
+			vs2_float[1] 	= pack_to_float(vs2_ff_0[63:32]);
+			
+			vs2_double 		= pack_to_double(vs2_ff_0);
+		end
+	
+	// Manage supported cases.
+	always_comb
+		if (execution_vector_ff_0.reciprocal_mode == ENABLED_RECIPROCAL_MODE)
+			case (execution_vector_ff_0.bit_mode)
+				ENABLED_64BIT_MODE 	: vd_low_bus = invert_double(square_root_double(vs2_double));
+				ENABLED_32BIT_MODE 	:
+					begin
+						vd_low_bus[31:0] 	= invert_float(square_root_float(vs2_float[0]));
+						vd_low_bus[63:32] 	= invert_float(square_root_float(vs2_float[1]));
+					end
+				
+				default 			: vd_low_bus = '0;
+			endcase
+			
+		else
+			case (execution_vector_ff_0.bit_mode)
+				ENABLED_64BIT_MODE 	: vd_low_bus = square_root_double(vs2_double);
+				ENABLED_32BIT_MODE 	:
+					begin
+						vd_low_bus[31:0] 	= square_root_float(vs2_float[0]);
+						vd_low_bus[63:32] 	= square_root_float(vs2_float[1]);
+					end
+				
+				default 			: vd_low_bus = '0;
+			endcase
+	
+endmodule 

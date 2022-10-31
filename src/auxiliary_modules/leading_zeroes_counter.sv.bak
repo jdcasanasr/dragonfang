@@ -1,0 +1,40 @@
+module leading_zeroes_counter
+# (
+	parameter INPUT_WIDTH 	= 64,
+	parameter OUTPUT_WIDTH 	= $clog2(INPUT_WIDTH)
+)
+(
+	input 	wire [INPUT_WIDTH - 1:0] 	input_vector,
+	
+	output 	wire [OUTPUT_WIDTH - 1:0] 	count_vector
+);
+
+	generate
+	
+		// Base case: We either have 2'b1x or 2'b0x. Return
+		// a negated version of the MSB.
+		if (INPUT_WIDTH == 2)
+			assign count_vector = !input_vector[1];
+	
+		// Recursive case:
+		// Q: Why does it work with "wire" but not with "logic"?
+		else
+			begin
+				wire [OUTPUT_WIDTH - 2:0] half_count;
+				wire [(INPUT_WIDTH / 2) - 1:0] lhs = input_vector[(INPUT_WIDTH / 2) +: (INPUT_WIDTH / 2)];
+				wire [(INPUT_WIDTH / 2) - 1:0] rhs = input_vector[0 +: (INPUT_WIDTH / 2)];
+				wire left_empty = ~| lhs;
+				
+				leading_zeroes_counter # (.INPUT_WIDTH (INPUT_WIDTH / 2)) leading_zeroes_counter_recursive
+				(
+					.input_vector 	(left_empty ? rhs : lhs),
+					
+					.count_vector 	(half_count)
+				);
+				
+				assign count_vector = {left_empty, half_count};
+			end
+	
+	endgenerate
+
+endmodule 

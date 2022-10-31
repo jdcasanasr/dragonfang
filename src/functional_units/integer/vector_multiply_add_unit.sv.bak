@@ -1,0 +1,820 @@
+module vector_multiply_add_unit
+
+import 	dragonfang_pkg::*;
+
+(
+	input 	logic 				clock,
+	input 	logic 				reset_n,
+	input 	execution_vector_t 	execution_vector,
+	
+	input 	logic [63:0] 		vs2,
+	input 	logic [63:0] 		vs1,
+	input 	logic [63:0]		vd,
+	
+	output 	logic [63:0] 		vd_low,
+	output 	logic [63:0] 		vd_high
+);
+
+	execution_vector_t 	execution_vector_ff_0;
+	logic [63:0] 		vs2_ff_0;
+	logic [63:0] 		vs1_ff_0;
+	logic [63:0]		vd_ff_0;
+	
+	logic [63:0] 		vs1_effective_bus;
+	logic [63:0] 		source_vector_2_effective_bus;
+	logic [63:0] 		vd_low_bus;
+	logic [63:0] 		vd_high_bus;
+	logic [127:0] 		vd_complete_bus;
+	logic [127:0]		product_bus;
+	logic [127:0]		product_bus_effective;
+	logic [127:0]		addend_bus;
+	logic [15:0]		input_carry;
+	logic [15:0]		output_carry;
+	
+	logic [15:0] 	product_8_unsigned_unsigned 	[7:0];
+	logic [15:0] 	product_8_unsigned_signed 		[7:0];
+	logic [15:0] 	product_8_signed_unsigned 		[7:0];
+	logic [15:0] 	product_8_signed_signed 		[7:0];
+
+	logic [31:0] 	product_16_unsigned_unsigned 	[3:0];
+	logic [31:0] 	product_16_unsigned_signed 		[3:0];
+	logic [31:0] 	product_16_signed_unsigned 		[3:0];
+	logic [31:0] 	product_16_signed_signed 		[3:0];
+
+	logic [63:0] 	product_32_unsigned_unsigned 	[1:0];
+	logic [63:0] 	product_32_unsigned_signed 		[1:0];
+	logic [63:0] 	product_32_signed_unsigned 		[1:0];
+	logic [63:0] 	product_32_signed_signed 		[1:0];
+
+	logic [127:0] 	product_64_unsigned_unsigned;
+	logic [127:0] 	product_64_unsigned_signed;
+	logic [127:0] 	product_64_signed_unsigned;
+	logic [127:0] 	product_64_signed_signed;
+	
+	integer i;
+
+	// Manage inter-stage flip-flop's.
+	always_ff @ (posedge clock, negedge reset_n)
+		if (!reset_n)
+			begin
+				execution_vector_ff_0 	= '0;
+				vs2_ff_0 	= '0;
+				vs1_ff_0	= '0;
+				vd_ff_0 = '0;
+				
+				vd_low		= '0;
+				vd_high		= '0;
+			end
+			
+		else
+			begin
+				execution_vector_ff_0 	= execution_vector;
+				vs2_ff_0 	= vs2;
+				vs1_ff_0	= vs1;
+				vd_ff_0 = vd;
+				
+				vd_low		= vd_low_bus;
+				vd_high		= vd_high_bus;
+			end
+	
+	// Choose what operand to multiply againts vs2
+	// and what operand to add once the product is done.
+	always_comb
+		case (execution_vector_ff_0.overwrite_mode)
+			ENABLED_OVERWRITE_SECOND_OPERAND_MODE 	:
+				begin
+					vs1_effective_bus = vs1_ff_0;
+					source_vector_2_effective_bus = vd_ff_0;
+				end
+				
+			ENABLED_OVERWRITE_DESTINATION_MODE 		:
+				begin
+					vs1_effective_bus = vd_ff_0;
+					source_vector_2_effective_bus = vs1_ff_0;
+				end
+				
+			default							:
+				begin
+					vs1_effective_bus = '0;
+					source_vector_2_effective_bus = '0;
+				end
+		endcase
+	
+	// Manage product_*_*_* arrays.
+	always_comb
+		begin
+			// Manage product_8_unsigned_unsigned.
+			product_8_unsigned_unsigned[0] 	= $unsigned(vs2_ff_0[7:0]) 		* $unsigned(vs1_effective_bus[7:0]);
+			product_8_unsigned_unsigned[1] 	= $unsigned(vs2_ff_0[15:8]) 	* $unsigned(vs1_effective_bus[15:8]);
+			product_8_unsigned_unsigned[2] 	= $unsigned(vs2_ff_0[23:16]) 	* $unsigned(vs1_effective_bus[23:16]);
+			product_8_unsigned_unsigned[3] 	= $unsigned(vs2_ff_0[31:24]) 	* $unsigned(vs1_effective_bus[31:24]);
+			product_8_unsigned_unsigned[4] 	= $unsigned(vs2_ff_0[39:32]) 	* $unsigned(vs1_effective_bus[39:32]);
+			product_8_unsigned_unsigned[5] 	= $unsigned(vs2_ff_0[47:40]) 	* $unsigned(vs1_effective_bus[47:40]);
+			product_8_unsigned_unsigned[6] 	= $unsigned(vs2_ff_0[55:48]) 	* $unsigned(vs1_effective_bus[55:48]);
+			product_8_unsigned_unsigned[7] 	= $unsigned(vs2_ff_0[63:56]) 	* $unsigned(vs1_effective_bus[63:56]);
+			
+			// Manage product_8_unsigned_signed.
+			product_8_unsigned_signed[0] 	= $unsigned(vs2_ff_0[7:0]) 		* $signed(vs1_effective_bus[7:0]);
+			product_8_unsigned_signed[1] 	= $unsigned(vs2_ff_0[15:8]) 	* $signed(vs1_effective_bus[15:8]);
+			product_8_unsigned_signed[2] 	= $unsigned(vs2_ff_0[23:16]) 	* $signed(vs1_effective_bus[23:16]);
+			product_8_unsigned_signed[3]	= $unsigned(vs2_ff_0[31:24]) 	* $signed(vs1_effective_bus[31:24]);
+			product_8_unsigned_signed[4] 	= $unsigned(vs2_ff_0[39:32]) 	* $signed(vs1_effective_bus[39:32]);
+			product_8_unsigned_signed[5] 	= $unsigned(vs2_ff_0[47:40]) 	* $signed(vs1_effective_bus[47:40]);
+			product_8_unsigned_signed[6] 	= $unsigned(vs2_ff_0[55:48]) 	* $signed(vs1_effective_bus[55:48]);
+			product_8_unsigned_signed[7]	= $unsigned(vs2_ff_0[63:56]) 	* $signed(vs1_effective_bus[63:56]);
+			
+			// Manage product_8_signed_unsigned.
+			product_8_signed_unsigned[0] 	= $signed(vs2_ff_0[7:0]) 		* $unsigned(vs1_effective_bus[7:0]);
+			product_8_signed_unsigned[1] 	= $signed(vs2_ff_0[15:8]) 		* $unsigned(vs1_effective_bus[15:8]);
+			product_8_signed_unsigned[2] 	= $signed(vs2_ff_0[23:16]) 		* $unsigned(vs1_effective_bus[23:16]);
+			product_8_signed_unsigned[3] 	= $signed(vs2_ff_0[31:24]) 		* $unsigned(vs1_effective_bus[31:24]);
+			product_8_signed_unsigned[4] 	= $signed(vs2_ff_0[39:32]) 		* $unsigned(vs1_effective_bus[39:32]);
+			product_8_signed_unsigned[5] 	= $signed(vs2_ff_0[47:40]) 		* $unsigned(vs1_effective_bus[47:40]);
+			product_8_signed_unsigned[6] 	= $signed(vs2_ff_0[55:48]) 		* $unsigned(vs1_effective_bus[55:48]);
+			product_8_signed_unsigned[7] 	= $signed(vs2_ff_0[63:56]) 		* $unsigned(vs1_effective_bus[63:56]);
+			
+			// Manage product_8_signed_signed.
+			product_8_signed_signed[0] 		= $signed(vs2_ff_0[7:0]) 		* $signed(vs1_effective_bus[7:0]);
+			product_8_signed_signed[1]		= $signed(vs2_ff_0[15:8]) 		* $signed(vs1_effective_bus[15:8]);
+			product_8_signed_signed[2] 		= $signed(vs2_ff_0[23:16]) 		* $signed(vs1_effective_bus[23:16]);
+			product_8_signed_signed[3] 		= $signed(vs2_ff_0[31:24]) 		* $signed(vs1_effective_bus[31:24]);
+			product_8_signed_signed[4] 		= $signed(vs2_ff_0[39:32]) 		* $signed(vs1_effective_bus[39:32]);
+			product_8_signed_signed[5] 		= $signed(vs2_ff_0[47:40]) 		* $signed(vs1_effective_bus[47:40]);
+			product_8_signed_signed[6] 		= $signed(vs2_ff_0[55:48]) 		* $signed(vs1_effective_bus[55:48]);
+			product_8_signed_signed[7] 		= $signed(vs2_ff_0[63:56]) 		* $signed(vs1_effective_bus[63:56]);
+			
+			// Manage product_16_unsigned_unsigned
+			product_16_unsigned_unsigned[0] = $unsigned(vs2_ff_0[15:0]) 	* $unsigned(vs1_effective_bus[15:0]);
+			product_16_unsigned_unsigned[1] = $unsigned(vs2_ff_0[31:16]) 	* $unsigned(vs1_effective_bus[31:16]);
+			product_16_unsigned_unsigned[2] = $unsigned(vs2_ff_0[47:32]) 	* $unsigned(vs1_effective_bus[47:32]);
+			product_16_unsigned_unsigned[3] = $unsigned(vs2_ff_0[63:48]) 	* $unsigned(vs1_effective_bus[63:48]);
+			
+			// Manage product_16_unsigned_signed
+			product_16_unsigned_signed[0] 	= $unsigned(vs2_ff_0[15:0]) 	* $signed(vs1_effective_bus[15:0]);
+			product_16_unsigned_signed[1] 	= $unsigned(vs2_ff_0[31:16]) 	* $signed(vs1_effective_bus[31:16]);
+			product_16_unsigned_signed[2] 	= $unsigned(vs2_ff_0[47:32]) 	* $signed(vs1_effective_bus[47:32]);
+			product_16_unsigned_signed[3]	= $unsigned(vs2_ff_0[63:48]) 	* $signed(vs1_effective_bus[63:48]);
+			
+			// Manage product_16_signed_unsigned
+			product_16_signed_unsigned[0] 	= $signed(vs2_ff_0[15:0]) 		* $unsigned(vs1_effective_bus[15:0]);
+			product_16_signed_unsigned[1] 	= $signed(vs2_ff_0[31:16]) 		* $unsigned(vs1_effective_bus[31:16]);
+			product_16_signed_unsigned[2] 	= $signed(vs2_ff_0[47:32]) 		* $unsigned(vs1_effective_bus[47:32]);
+			product_16_signed_unsigned[3] 	= $signed(vs2_ff_0[63:48]) 		* $unsigned(vs1_effective_bus[63:48]);
+			
+			// Manage product_16_signed_signed
+			product_16_signed_signed[0] 	= $signed(vs2_ff_0[15:0]) 		* $signed(vs1_effective_bus[15:0]);
+			product_16_signed_signed[1]		= $signed(vs2_ff_0[31:16]) 		* $signed(vs1_effective_bus[31:16]);
+			product_16_signed_signed[2] 	= $signed(vs2_ff_0[47:32]) 		* $signed(vs1_effective_bus[47:32]);
+			product_16_signed_signed[3] 	= $signed(vs2_ff_0[63:48]) 		* $signed(vs1_effective_bus[63:48]);
+			
+			// Manage product_32_unsigned_unsigned
+			product_32_unsigned_unsigned[0] = $unsigned(vs2_ff_0[31:0]) 	* $unsigned(vs1_effective_bus[31:0]);
+			product_32_unsigned_unsigned[1] = $unsigned(vs2_ff_0[63:32]) 	* $unsigned(vs1_effective_bus[63:32]);
+			
+			// Manage product_32_unsigned_signe
+			product_32_unsigned_signed[0] 	= $unsigned(vs2_ff_0[31:0]) 	* $signed(vs1_effective_bus[31:0]);
+			product_32_unsigned_signed[1] 	= $unsigned(vs2_ff_0[63:32]) 	* $signed(vs1_effective_bus[63:32]);
+			
+			// Manage product_32_signed_unsigned
+			product_32_signed_unsigned[0] 	= $signed(vs2_ff_0[31:0]) 		* $unsigned(vs1_effective_bus[31:0]);
+			product_32_signed_unsigned[1] 	= $signed(vs2_ff_0[63:32]) 		* $unsigned(vs1_effective_bus[63:32]);
+			
+			// Manage product_32_signed_signed
+			product_32_signed_signed[0] 	= $signed(vs2_ff_0[31:0]) 		* $signed(vs1_effective_bus[31:0]);
+			product_32_signed_signed[1]		= $signed(vs2_ff_0[63:32]) 		* $signed(vs1_effective_bus[63:32]);
+			
+			// Manage product_64_unsigned_unsigned.
+			product_64_unsigned_unsigned 	= $unsigned(vs2_ff_0) 			* $unsigned(vs1_effective_bus);
+			
+			// Manage product_64_unsigned_signed.
+			product_64_unsigned_signed 		= $unsigned(vs2_ff_0) 			* $signed(vs1_effective_bus);
+			
+			// Manage product_64_signed_unsigned.
+			product_64_signed_unsigned 		= $signed(vs2_ff_0) 			* $unsigned(vs1_effective_bus);
+			
+			// Manage product_64_signed_signed.
+			product_64_signed_signed 		= $signed(vs2_ff_0) 			* $signed(vs1_effective_bus);
+		end
+	
+	// Choose what kind of product to perform (signed, unsigned, etc.),
+	// according to bit_mode and widening_mode settings.
+	always_comb
+		if (execution_vector_ff_0.widening_mode == ENABLED_WIDENING_MODE)
+			case (execution_vector_ff_0.sign_mode)
+				ENABLED_UNSIGNED_UNSIGNED_MODE 	:
+						case (execution_vector_ff_0.bit_mode)
+							ENABLED_64BIT_MODE 	:
+								begin
+									product_bus 			= product_64_unsigned_unsigned;
+								end
+								
+							ENABLED_32BIT_MODE 	:
+								begin
+									product_bus[63:0] 		= product_32_unsigned_unsigned[0];
+									product_bus[127:64] 	= product_32_unsigned_unsigned[1];
+								end
+							
+							ENABLED_16BIT_MODE 	:
+								begin
+									product_bus[31:0] 		= product_16_unsigned_unsigned[0];
+									product_bus[63:32] 		= product_16_unsigned_unsigned[1];
+									product_bus[95:64] 		= product_16_unsigned_unsigned[2];
+									product_bus[127:96] 	= product_16_unsigned_unsigned[3];
+								end
+							
+							ENABLED_8BIT_MODE 	:
+								begin
+									product_bus[15:0] 		= product_8_unsigned_unsigned[0];
+									product_bus[31:16] 		= product_8_unsigned_unsigned[1];
+									product_bus[47:32] 		= product_8_unsigned_unsigned[2];
+									product_bus[63:48] 		= product_8_unsigned_unsigned[3];
+									product_bus[79:64] 		= product_8_unsigned_unsigned[4];
+									product_bus[95:80] 		= product_8_unsigned_unsigned[5];
+									product_bus[111:96] 	= product_8_unsigned_unsigned[6];
+									product_bus[127:112] 	= product_8_unsigned_unsigned[7];
+								end
+						endcase
+						
+				ENABLED_UNSIGNED_SIGNED_MODE 	:
+						case (execution_vector_ff_0.bit_mode)
+							ENABLED_64BIT_MODE 	:
+								begin
+									product_bus 			= product_64_unsigned_signed;
+								end
+								
+							ENABLED_32BIT_MODE 	:
+								begin
+									product_bus[63:0] 		= product_32_unsigned_signed[0];
+									product_bus[127:64] 	= product_32_unsigned_signed[1];
+								end
+							
+							ENABLED_16BIT_MODE 	:
+								begin
+									product_bus[31:0] 		= product_16_unsigned_signed[0];
+									product_bus[63:32] 		= product_16_unsigned_signed[1];
+									product_bus[95:64] 		= product_16_unsigned_signed[2];
+									product_bus[127:96] 	= product_16_unsigned_signed[3];
+								end
+							
+							ENABLED_8BIT_MODE 	:
+								begin
+									product_bus[15:0] 		= product_8_unsigned_signed[0];
+									product_bus[31:16] 		= product_8_unsigned_signed[1];
+									product_bus[47:32] 		= product_8_unsigned_signed[2];
+									product_bus[63:48] 		= product_8_unsigned_signed[3];
+									product_bus[79:64] 		= product_8_unsigned_signed[4];
+									product_bus[95:80] 		= product_8_unsigned_signed[5];
+									product_bus[111:96] 	= product_8_unsigned_signed[6];
+									product_bus[127:112] 	= product_8_unsigned_signed[7];
+								end
+						endcase
+						
+				ENABLED_SIGNED_UNSIGNED_MODE 	:
+						case (execution_vector_ff_0.bit_mode)
+							ENABLED_64BIT_MODE 	:
+								begin
+									product_bus 			= product_64_signed_unsigned;
+								end
+								
+							ENABLED_32BIT_MODE 	:
+								begin
+									product_bus[63:0] 		= product_32_signed_unsigned[0];
+									product_bus[127:64] 	= product_32_signed_unsigned[1];
+								end
+							
+							ENABLED_16BIT_MODE 	:
+								begin
+									product_bus[31:0] 		= product_16_signed_unsigned[0];
+									product_bus[63:32] 		= product_16_signed_unsigned[1];
+									product_bus[95:64] 		= product_16_signed_unsigned[2];
+									product_bus[127:96] 	= product_16_signed_unsigned[3];
+								end
+							
+							ENABLED_8BIT_MODE 	:
+								begin
+									product_bus[15:0] 		= product_8_signed_unsigned[0];
+									product_bus[31:16] 		= product_8_signed_unsigned[1];
+									product_bus[47:32] 		= product_8_signed_unsigned[2];
+									product_bus[63:48] 		= product_8_signed_unsigned[3];
+									product_bus[79:64] 		= product_8_signed_unsigned[4];
+									product_bus[95:80] 		= product_8_signed_unsigned[5];
+									product_bus[111:96] 	= product_8_signed_unsigned[6];
+									product_bus[127:112] 	= product_8_signed_unsigned[7];
+								end
+						endcase 
+				
+				ENABLED_SIGNED_SIGNED_MODE 		:
+						case (execution_vector_ff_0.bit_mode)
+							ENABLED_64BIT_MODE 	:
+								begin
+									product_bus 			= product_64_signed_signed;
+								end
+								
+							ENABLED_32BIT_MODE 	:
+								begin
+									product_bus[63:0] 		= product_32_signed_signed[0];
+									product_bus[127:64] 	= product_32_signed_signed[1];
+								end
+							
+							ENABLED_16BIT_MODE 	:
+								begin
+									product_bus[31:0] 		= product_16_signed_signed[0];
+									product_bus[63:32] 		= product_16_signed_signed[1];
+									product_bus[95:64] 		= product_16_signed_signed[2];
+									product_bus[127:96] 	= product_16_signed_signed[3];
+								end
+							
+							ENABLED_8BIT_MODE 	:
+								begin
+									product_bus[15:0] 		= product_8_signed_signed[0];
+									product_bus[31:16] 		= product_8_signed_signed[1];
+									product_bus[47:32] 		= product_8_signed_signed[2];
+									product_bus[63:48] 		= product_8_signed_signed[3];
+									product_bus[79:64] 		= product_8_signed_signed[4];
+									product_bus[95:80] 		= product_8_signed_signed[5];
+									product_bus[111:96] 	= product_8_signed_signed[6];
+									product_bus[127:112] 	= product_8_signed_signed[7];
+								end
+						endcase 
+			endcase
+			
+		else 	// When widening is not enabled, the higher half of product_bus is always '0.
+			begin
+				product_bus[127:64] = '0;
+				
+				case (execution_vector_ff_0.sign_mode)
+					ENABLED_UNSIGNED_UNSIGNED_MODE 	:
+							case (execution_vector_ff_0.bit_mode)
+								ENABLED_64BIT_MODE 	:
+									begin
+										product_bus[63:0] 		= product_64_unsigned_unsigned[63:0];
+									end
+									
+								ENABLED_32BIT_MODE 	:
+									begin
+										product_bus[31:0] 		= product_32_unsigned_unsigned[0][31:0];
+										product_bus[63:32] 		= product_32_unsigned_unsigned[1][31:0];
+									end
+								
+								ENABLED_16BIT_MODE 	:
+									begin
+										product_bus[15:0] 		= product_16_unsigned_unsigned[0][15:0];
+										product_bus[31:16] 		= product_16_unsigned_unsigned[1][15:0];
+										product_bus[47:32] 		= product_16_unsigned_unsigned[2][15:0];
+										product_bus[63:48] 		= product_16_unsigned_unsigned[3][15:0];
+									end
+								
+								ENABLED_8BIT_MODE 	:
+									begin
+										product_bus[7:0] 		= product_8_unsigned_unsigned[0][7:0];
+										product_bus[15:8] 		= product_8_unsigned_unsigned[1][7:0];
+										product_bus[23:16] 		= product_8_unsigned_unsigned[2][7:0];
+										product_bus[31:24] 		= product_8_unsigned_unsigned[3][7:0];
+										product_bus[39:32] 		= product_8_unsigned_unsigned[4][7:0];
+										product_bus[47:40] 		= product_8_unsigned_unsigned[5][7:0];
+										product_bus[55:48] 		= product_8_unsigned_unsigned[6][7:0];
+										product_bus[63:56] 		= product_8_unsigned_unsigned[7][7:0];
+									end
+							endcase
+							
+					ENABLED_UNSIGNED_SIGNED_MODE 	:
+							case (execution_vector_ff_0.bit_mode)
+								ENABLED_64BIT_MODE 	:
+									begin
+										product_bus[63:0] 		= product_64_unsigned_signed[63:0];
+									end
+									
+								ENABLED_32BIT_MODE 	:
+									begin
+										product_bus[31:0] 		= product_32_unsigned_signed[0][31:0];
+										product_bus[63:32] 		= product_32_unsigned_signed[1][31:0];
+									end
+								
+								ENABLED_16BIT_MODE 	:
+									begin
+										product_bus[15:0] 		= product_16_unsigned_signed[0][15:0];
+										product_bus[31:16] 		= product_16_unsigned_signed[1][15:0];
+										product_bus[47:32] 		= product_16_unsigned_signed[2][15:0];
+										product_bus[63:48] 		= product_16_unsigned_signed[3][15:0];
+									end
+								
+								ENABLED_8BIT_MODE 	:
+									begin
+										product_bus[7:0] 		= product_8_unsigned_signed[0][7:0];
+										product_bus[15:8] 		= product_8_unsigned_signed[1][7:0];
+										product_bus[23:16] 		= product_8_unsigned_signed[2][7:0];
+										product_bus[31:24] 		= product_8_unsigned_signed[3][7:0];
+										product_bus[39:32] 		= product_8_unsigned_signed[4][7:0];
+										product_bus[47:40] 		= product_8_unsigned_signed[5][7:0];
+										product_bus[55:48] 		= product_8_unsigned_signed[6][7:0];
+										product_bus[63:56] 		= product_8_unsigned_signed[7][7:0];
+									end
+							endcase
+							
+					ENABLED_SIGNED_UNSIGNED_MODE 	:
+							case (execution_vector_ff_0.bit_mode)
+								ENABLED_64BIT_MODE 	:
+									begin
+										product_bus[63:0] 		= product_64_signed_unsigned[63:0];
+									end
+									
+								ENABLED_32BIT_MODE 	:
+									begin
+										product_bus[31:0] 		= product_32_signed_unsigned[0][31:0];
+										product_bus[63:32] 		= product_32_signed_unsigned[1][31:0];
+									end
+								
+								ENABLED_16BIT_MODE 	:
+									begin
+										product_bus[15:0] 		= product_16_signed_unsigned[0][15:0];
+										product_bus[31:16] 		= product_16_signed_unsigned[1][15:0];
+										product_bus[47:32] 		= product_16_signed_unsigned[2][15:0];
+										product_bus[63:48] 		= product_16_signed_unsigned[3][15:0];
+									end
+								
+								ENABLED_8BIT_MODE 	:
+									begin
+										product_bus[7:0] 		= product_8_signed_unsigned[0][7:0];
+										product_bus[15:8] 		= product_8_signed_unsigned[1][7:0];
+										product_bus[23:16] 		= product_8_signed_unsigned[2][7:0];
+										product_bus[31:24] 		= product_8_signed_unsigned[3][7:0];
+										product_bus[39:32] 		= product_8_signed_unsigned[4][7:0];
+										product_bus[47:40] 		= product_8_signed_unsigned[5][7:0];
+										product_bus[55:48] 		= product_8_signed_unsigned[6][7:0];
+										product_bus[63:56] 		= product_8_signed_unsigned[7][7:0];
+									end
+							endcase
+					
+					ENABLED_SIGNED_SIGNED_MODE 		:
+							case (execution_vector_ff_0.bit_mode)
+								ENABLED_64BIT_MODE 	:
+									begin
+										product_bus[63:0] 		= product_64_signed_signed[63:0];
+									end
+									
+								ENABLED_32BIT_MODE 	:
+									begin
+										product_bus[31:0] 		= product_32_signed_signed[0][31:0];
+										product_bus[63:32] 		= product_32_signed_signed[1][31:0];
+									end
+								
+								ENABLED_16BIT_MODE 	:
+									begin
+										product_bus[15:0] 		= product_16_signed_signed[0][15:0];
+										product_bus[31:16] 		= product_16_signed_signed[1][15:0];
+										product_bus[47:32] 		= product_16_signed_signed[2][15:0];
+										product_bus[63:48] 		= product_16_signed_signed[3][15:0];
+									end
+								
+								ENABLED_8BIT_MODE 	:
+									begin
+										product_bus[7:0] 		= product_8_signed_signed[0][7:0];
+										product_bus[15:8] 		= product_8_signed_signed[1][7:0];
+										product_bus[23:16] 		= product_8_signed_signed[2][7:0];
+										product_bus[31:24] 		= product_8_signed_signed[3][7:0];
+										product_bus[39:32] 		= product_8_signed_signed[4][7:0];
+										product_bus[47:40] 		= product_8_signed_signed[5][7:0];
+										product_bus[55:48] 		= product_8_signed_signed[6][7:0];
+										product_bus[63:56] 		= product_8_signed_signed[7][7:0];
+									end
+							endcase
+				endcase
+			end
+	
+	// Transform the second operand to support widening addition 
+	// (if needed) and save it as "addend_bus".
+	always_comb
+		if (execution_vector_ff_0.widening_mode == ENABLED_WIDENING_MODE)
+			case (execution_vector_ff_0.bit_mode) 			// Zero-extend it to 2 * SEW for widening addition.
+				ENABLED_64BIT_MODE 	:
+					begin
+						addend_bus = {{64{1'b0}}, source_vector_2_effective_bus};
+					end
+					
+				ENABLED_32BIT_MODE 	:
+					begin
+						addend_bus[63:0] 	= {{32{1'b0}}, source_vector_2_effective_bus[31:0]};
+						addend_bus[127:64] 	= {{32{1'b0}}, source_vector_2_effective_bus[63:32]};
+					end
+				
+				ENABLED_16BIT_MODE 	:
+					begin
+						addend_bus[31:0] 	= {{16{1'b0}}, source_vector_2_effective_bus[15:0]};
+						addend_bus[63:32] 	= {{16{1'b0}}, source_vector_2_effective_bus[31:16]};
+						addend_bus[95:64] 	= {{16{1'b0}}, source_vector_2_effective_bus[47:32]};
+						addend_bus[127:96] 	= {{16{1'b0}}, source_vector_2_effective_bus[63:48]};
+					end
+					
+				ENABLED_8BIT_MODE 	:
+					begin
+						addend_bus[15:0] 	= {{8{1'b0}}, source_vector_2_effective_bus[7:0]};
+						addend_bus[31:16] 	= {{8{1'b0}}, source_vector_2_effective_bus[15:8]};
+						addend_bus[47:32] 	= {{8{1'b0}}, source_vector_2_effective_bus[23:16]};
+						addend_bus[63:48] 	= {{8{1'b0}}, source_vector_2_effective_bus[31:24]};
+						addend_bus[79:64] 	= {{8{1'b0}}, source_vector_2_effective_bus[39:32]};
+						addend_bus[95:80] 	= {{8{1'b0}}, source_vector_2_effective_bus[47:40]};
+						addend_bus[111:96] 	= {{8{1'b0}}, source_vector_2_effective_bus[55:48]};
+						addend_bus[127:112] = {{8{1'b0}}, source_vector_2_effective_bus[63:56]};
+					end
+			endcase
+			
+		else
+			begin
+				addend_bus[63:0] 	= source_vector_2_effective_bus;
+				addend_bus[127:64] 	= '0;
+			end
+	
+	// Transform the product to support multiply-sub operations
+	// or leave it as-is for multiply-add instructions.
+	always_comb
+		if (execution_vector_ff_0.subtraction_mode == ENABLED_SUBTRACTION_MODE)
+			product_bus_effective = ~product_bus;
+			
+		else
+			product_bus_effective = product_bus;
+	
+	// Manage input_carry and output_carry arrays.
+	always_comb
+		begin
+			// The very first input carry is independent of any setting.
+			input_carry[0] = (execution_vector_ff_0.subtraction_mode == ENABLED_SUBTRACTION_MODE ? 1'b1 : 1'b0);
+			
+			case (execution_vector_ff_0.bit_mode)
+				ENABLED_64BIT_MODE 	:
+					if (execution_vector_ff_0.widening_mode == ENABLED_WIDENING_MODE) 	// Treat elements as 128-bit.
+						for (i = 1; i <= 15; i++)
+							input_carry[i] = output_carry[i - 1];
+							
+					else										// Treat elements as 64-bit.
+						begin
+							input_carry[8] = (execution_vector_ff_0.subtraction_mode == ENABLED_SUBTRACTION_MODE ? 1'b1 : 1'b0);
+							
+							for (i = 1; i <= 7; i++)
+								input_carry[i] = output_carry[i - 1];
+								
+							for (i = 9; i <= 15; i++)
+								input_carry[i] = output_carry[i - 1];
+						end
+
+				ENABLED_32BIT_MODE 	:
+					if (execution_vector_ff_0.widening_mode == ENABLED_WIDENING_MODE) 	// Treat elements as 64-bit.
+						begin
+							input_carry[8] = (execution_vector_ff_0.subtraction_mode == ENABLED_SUBTRACTION_MODE ? 1'b1 : 1'b0);
+							
+							for (i = 1; i <= 7; i++)
+								input_carry[i] = output_carry[i - 1];
+								
+							for (i = 9; i <= 15; i++)
+								input_carry[i] = output_carry[i - 1];
+						end
+						
+					else 										// Treat elements as 32-bit.
+						begin
+							input_carry[4] 	= (execution_vector_ff_0.subtraction_mode == ENABLED_SUBTRACTION_MODE ? 1'b1 : 1'b0);
+							input_carry[8] 	= (execution_vector_ff_0.subtraction_mode == ENABLED_SUBTRACTION_MODE ? 1'b1 : 1'b0);
+							input_carry[12] = (execution_vector_ff_0.subtraction_mode == ENABLED_SUBTRACTION_MODE ? 1'b1 : 1'b0);
+							
+							for (i = 1; i <= 3; i++)
+								input_carry[i] = output_carry[i - 1];
+								
+							for (i = 5; i <= 7; i++)
+								input_carry[i] = output_carry[i - 1];
+								
+							for (i = 9; i <= 11; i++)
+								input_carry[i] = output_carry[i - 1];
+								
+							for (i = 13; i <= 15; i++)
+								input_carry[i] = output_carry[i - 1];
+						end
+
+				ENABLED_16BIT_MODE 	:
+					if (execution_vector_ff_0.widening_mode == ENABLED_WIDENING_MODE) 	// Treat elements as 32-bit.
+						begin
+							input_carry[4] 	= (execution_vector_ff_0.subtraction_mode == ENABLED_SUBTRACTION_MODE ? 1'b1 : 1'b0);
+							input_carry[8] 	= (execution_vector_ff_0.subtraction_mode == ENABLED_SUBTRACTION_MODE ? 1'b1 : 1'b0);
+							input_carry[12] = (execution_vector_ff_0.subtraction_mode == ENABLED_SUBTRACTION_MODE ? 1'b1 : 1'b0);
+							
+							for (i = 1; i <= 3; i++)
+								input_carry[i] = output_carry[i - 1];
+								
+							for (i = 5; i <= 7; i++)
+								input_carry[i] = output_carry[i - 1];
+								
+							for (i = 9; i <= 11; i++)
+								input_carry[i] = output_carry[i - 1];
+								
+							for (i = 13; i <= 15; i++)
+								input_carry[i] = output_carry[i - 1];
+						end
+						
+					else 										// Treat elements as 16-bit.
+						begin
+							input_carry[2] 	= (execution_vector_ff_0.subtraction_mode == ENABLED_SUBTRACTION_MODE ? 1'b1 : 1'b0);
+							input_carry[4] 	= (execution_vector_ff_0.subtraction_mode == ENABLED_SUBTRACTION_MODE ? 1'b1 : 1'b0);
+							input_carry[6] 	= (execution_vector_ff_0.subtraction_mode == ENABLED_SUBTRACTION_MODE ? 1'b1 : 1'b0);
+							input_carry[8] 	= (execution_vector_ff_0.subtraction_mode == ENABLED_SUBTRACTION_MODE ? 1'b1 : 1'b0);
+							input_carry[10] = (execution_vector_ff_0.subtraction_mode == ENABLED_SUBTRACTION_MODE ? 1'b1 : 1'b0);
+							input_carry[12] = (execution_vector_ff_0.subtraction_mode == ENABLED_SUBTRACTION_MODE ? 1'b1 : 1'b0);
+							input_carry[14] = (execution_vector_ff_0.subtraction_mode == ENABLED_SUBTRACTION_MODE ? 1'b1 : 1'b0);
+							
+							for (i = 1; i <= 15; i += 2)
+								input_carry[i] = output_carry[i - 1];
+						end
+
+				ENABLED_8BIT_MODE 	:
+					if (execution_vector_ff_0.widening_mode == ENABLED_WIDENING_MODE)		// Treat elements as 16-bit
+						begin
+							input_carry[2] 	= (execution_vector_ff_0.subtraction_mode == ENABLED_SUBTRACTION_MODE ? 1'b1 : 1'b0);
+							input_carry[4] 	= (execution_vector_ff_0.subtraction_mode == ENABLED_SUBTRACTION_MODE ? 1'b1 : 1'b0);
+							input_carry[6] 	= (execution_vector_ff_0.subtraction_mode == ENABLED_SUBTRACTION_MODE ? 1'b1 : 1'b0);
+							input_carry[8] 	= (execution_vector_ff_0.subtraction_mode == ENABLED_SUBTRACTION_MODE ? 1'b1 : 1'b0);
+							input_carry[10] = (execution_vector_ff_0.subtraction_mode == ENABLED_SUBTRACTION_MODE ? 1'b1 : 1'b0);
+							input_carry[12] = (execution_vector_ff_0.subtraction_mode == ENABLED_SUBTRACTION_MODE ? 1'b1 : 1'b0);
+							input_carry[14] = (execution_vector_ff_0.subtraction_mode == ENABLED_SUBTRACTION_MODE ? 1'b1 : 1'b0);
+							
+							for (i = 1; i <= 15; i += 2)
+								input_carry[i] = output_carry[i - 1];
+						end
+						
+					else											// Treat elements as 8-bit.
+						for (i = 1; i <= 15; i++)
+							input_carry[i] = (execution_vector_ff_0.subtraction_mode == ENABLED_SUBTRACTION_MODE ? 1'b1 : 1'b0);
+			endcase
+		end
+	
+	// Assign the output buses according to settings.
+	always_comb
+		if (execution_vector_ff_0.widening_mode == ENABLED_WIDENING_MODE)
+			begin
+				vd_low_bus 	= vd_complete_bus[63:0];
+				vd_high_bus 	= vd_complete_bus[127:64];
+			end
+			
+		else
+			begin
+				vd_low_bus 	= vd_complete_bus[63:0];
+				vd_high_bus 	= '0;
+			end
+	
+	// Manage add_8 instances.
+	add_8 add_8_0
+	(
+		.source_element_0 	(product_bus_effective[7:0]),
+		.source_element_1 	(addend_bus[7:0]),
+		.input_carry 		(input_carry[0]),
+		
+		.target_element 	(vd_complete_bus[7:0]),
+		.output_carry 		(output_carry[0])
+	);
+	
+	add_8 add_8_1
+	(
+		.source_element_0 	(product_bus_effective[15:8]),
+		.source_element_1 	(addend_bus[15:8]),
+		.input_carry 		(input_carry[1]),
+		
+		.target_element 	(vd_complete_bus[15:8]),
+		.output_carry 		(output_carry[1])
+	);
+	
+	add_8 add_8_2
+	(
+		.source_element_0 	(product_bus_effective[23:16]),
+		.source_element_1 	(addend_bus[23:16]),
+		.input_carry 		(input_carry[2]),
+		
+		.target_element 	(vd_complete_bus[23:16]),
+		.output_carry 		(output_carry[2])
+	);
+	
+	add_8 add_8_3
+	(
+		.source_element_0 	(product_bus_effective[31:24]),
+		.source_element_1 	(addend_bus[31:24]),
+		.input_carry 		(input_carry[3]),
+		
+		.target_element 	(vd_complete_bus[31:24]),
+		.output_carry 		(output_carry[3])
+	);
+	
+	add_8 add_8_4
+	(
+		.source_element_0 	(product_bus_effective[39:32]),
+		.source_element_1 	(addend_bus[39:32]),
+		.input_carry 		(input_carry[4]),
+		
+		.target_element 	(vd_complete_bus[39:32]),
+		.output_carry 		(output_carry[4])
+	);
+	
+	add_8 add_8_5
+	(
+		.source_element_0 	(product_bus_effective[47:40]),
+		.source_element_1 	(addend_bus[47:40]),
+		.input_carry 		(input_carry[5]),
+		
+		.target_element 	(vd_complete_bus[47:40]),
+		.output_carry 		(output_carry[5])
+	);
+	
+	add_8 add_8_6
+	(
+		.source_element_0 	(product_bus_effective[55:48]),
+		.source_element_1 	(addend_bus[55:48]),
+		.input_carry 		(input_carry[6]),
+		
+		.target_element 	(vd_complete_bus[55:48]),
+		.output_carry 		(output_carry[6])
+	);
+	
+	add_8 add_8_7
+	(
+		.source_element_0 	(product_bus_effective[63:56]),
+		.source_element_1 	(addend_bus[63:56]),
+		.input_carry 		(input_carry[7]),
+		
+		.target_element 	(vd_complete_bus[63:56]),
+		.output_carry 		(output_carry[7])
+	);
+	
+	add_8 add_8_8
+	(
+		.source_element_0 	(product_bus_effective[71:64]),
+		.source_element_1 	(addend_bus[71:64]),
+		.input_carry 		(input_carry[8]),
+		
+		.target_element 	(vd_complete_bus[71:64]),
+		.output_carry 		(output_carry[8])
+	);
+	
+	add_8 add_8_9
+	(
+		.source_element_0 	(product_bus_effective[79:72]),
+		.source_element_1 	(addend_bus[79:72]),
+		.input_carry 		(input_carry[9]),
+		
+		.target_element 	(vd_complete_bus[79:72]),
+		.output_carry 		(output_carry[9])
+	);
+	
+	add_8 add_8_10
+	(
+		.source_element_0 	(product_bus_effective[87:80]),
+		.source_element_1 	(addend_bus[87:80]),
+		.input_carry 		(input_carry[10]),
+		
+		.target_element 	(vd_complete_bus[87:80]),
+		.output_carry 		(output_carry[10])
+	);
+	
+	add_8 add_8_11
+	(
+		.source_element_0 	(product_bus_effective[95:88]),
+		.source_element_1 	(addend_bus[95:88]),
+		.input_carry 		(input_carry[11]),
+		
+		.target_element 	(vd_complete_bus[95:88]),
+		.output_carry 		(output_carry[11])
+	);
+	
+	add_8 add_8_12
+	(
+		.source_element_0 	(product_bus_effective[103:96]),
+		.source_element_1 	(addend_bus[103:96]),
+		.input_carry 		(input_carry[12]),
+		
+		.target_element 	(vd_complete_bus[103:96]),
+		.output_carry 		(output_carry[12])
+	);
+	
+	add_8 add_8_13
+	(
+		.source_element_0 	(product_bus_effective[111:104]),
+		.source_element_1 	(addend_bus[111:104]),
+		.input_carry 		(input_carry[13]),
+		
+		.target_element 	(vd_complete_bus[111:104]),
+		.output_carry 		(output_carry[13])
+	);
+	
+	add_8 add_8_14
+	(
+		.source_element_0 	(product_bus_effective[119:112]),
+		.source_element_1 	(addend_bus[119:112]),
+		.input_carry 		(input_carry[14]),
+		
+		.target_element 	(vd_complete_bus[119:112]),
+		.output_carry 		(output_carry[14])
+	);
+	
+	add_8 add_8_15
+	(
+		.source_element_0 	(product_bus_effective[127:120]),
+		.source_element_1 	(addend_bus[127:120]),
+		.input_carry 		(input_carry[15]),
+		
+		.target_element 	(vd_complete_bus[127:120]),
+		.output_carry 		(output_carry[15])
+	);
+	
+endmodule 

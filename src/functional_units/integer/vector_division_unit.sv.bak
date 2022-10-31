@@ -1,0 +1,196 @@
+module vector_division_unit
+
+import dragonfang_pkg::*;
+
+(
+	input 	logic 				clock,
+	input 	logic 				reset_n,
+	input 	execution_vector_t 	execution_vector,
+
+	input 	logic [63:0] 		vs2,
+	input 	logic [63:0] 		vs1,
+	
+	output 	logic [63:0] 		vd_low
+);
+
+	logic [63:0] 		vs2_ff_0;
+	logic [63:0] 		vs1_ff_0;
+	execution_vector_t 	execution_vector_ff_0;
+	
+	logic [63:0]		vd_low_bus;
+
+	// Manage inter-stage flip-flop's.
+	always_ff @ (posedge clock, negedge reset_n)
+		if (!reset_n)
+			begin
+				vs2_ff_0 	= '0;
+				vs1_ff_0 	= '0;
+				execution_vector_ff_0 	= '0;
+				
+				vd_low			= '0;
+			end
+			
+		else
+			begin
+				vs2_ff_0 	= vs2;
+				vs1_ff_0 	= vs1;
+				execution_vector_ff_0 	= execution_vector;
+				
+				vd_low			= vd_low_bus;
+			end
+	
+	// Deliver the division or remainder according to settings.
+	always_comb
+		if (execution_vector_ff_0.remainder_mode == ENABLED_REMAINDER_MODE) 	// Deliver the remainder.
+			case (execution_vector_ff_0.sign_mode)
+				ENABLED_UNSIGNED_UNSIGNED_MODE 	:
+					case (execution_vector_ff_0.bit_mode)
+						ENABLED_64BIT_MODE :
+							begin
+								vd_low_bus 			= $unsigned(vs2_ff_0) 			% $unsigned(vs1_ff_0);
+							end
+							
+						ENABLED_32BIT_MODE :
+							begin
+								vd_low_bus[31:0] 	= $unsigned(vs2_ff_0[31:0]) 	% $unsigned(vs1_ff_0[31:0]);
+								vd_low_bus[63:32] 	= $unsigned(vs2_ff_0[63:32]) 	% $unsigned(vs1_ff_0[63:32]);
+							end
+							
+						ENABLED_16BIT_MODE :
+							begin
+								vd_low_bus[15:0] 	= $unsigned(vs2_ff_0[15:0]) 	% $unsigned(vs1_ff_0[15:0]);
+								vd_low_bus[31:16] 	= $unsigned(vs2_ff_0[31:16]) 	% $unsigned(vs1_ff_0[31:16]);
+								vd_low_bus[47:32] 	= $unsigned(vs2_ff_0[47:32]) 	% $unsigned(vs1_ff_0[47:32]);
+								vd_low_bus[63:48] 	= $unsigned(vs2_ff_0[63:48]) 	% $unsigned(vs1_ff_0[63:48]);
+							end
+							
+						ENABLED_8BIT_MODE :
+							begin	
+								vd_low_bus[7:0] 		= $unsigned(vs2_ff_0[7:0]) 		% $unsigned(vs1_ff_0[7:0]);
+								vd_low_bus[15:8] 	= $unsigned(vs2_ff_0[15:8])		% $unsigned(vs1_ff_0[15:8]);
+								vd_low_bus[23:16] 	= $unsigned(vs2_ff_0[23:16]) 	% $unsigned(vs1_ff_0[23:16]);
+								vd_low_bus[31:24] 	= $unsigned(vs2_ff_0[31:24]) 	% $unsigned(vs1_ff_0[31:24]);
+								vd_low_bus[39:32] 	= $unsigned(vs2_ff_0[39:32]) 	% $unsigned(vs1_ff_0[39:32]);
+								vd_low_bus[47:40] 	= $unsigned(vs2_ff_0[47:40]) 	% $unsigned(vs1_ff_0[47:40]);
+								vd_low_bus[55:48] 	= $unsigned(vs2_ff_0[55:48]) 	% $unsigned(vs1_ff_0[55:48]);
+								vd_low_bus[63:56] 	= $unsigned(vs2_ff_0[63:56]) 	% $unsigned(vs1_ff_0[63:56]);
+							end
+					endcase
+					
+				ENABLED_SIGNED_SIGNED_MODE 	:
+					case (execution_vector_ff_0.bit_mode)
+						ENABLED_64BIT_MODE :
+							begin
+								vd_low_bus 			= $signed(vs2_ff_0) 			% $signed(vs1_ff_0);
+							end
+							
+						ENABLED_32BIT_MODE :
+							begin
+								vd_low_bus[31:0] 	= $signed(vs2_ff_0[31:0]) 		% $signed(vs1_ff_0[31:0]);
+								vd_low_bus[63:32] 	= $signed(vs2_ff_0[63:32]) 		% $signed(vs1_ff_0[63:32]);
+							end
+							
+						ENABLED_16BIT_MODE :
+							begin
+								vd_low_bus[15:0] 	= $signed(vs2_ff_0[15:0]) 		% $signed(vs1_ff_0[15:0]);
+								vd_low_bus[31:16] 	= $signed(vs2_ff_0[31:16]) 		% $signed(vs1_ff_0[31:16]);
+								vd_low_bus[47:32] 	= $signed(vs2_ff_0[47:32]) 		% $signed(vs1_ff_0[47:32]);
+								vd_low_bus[63:48] 	= $signed(vs2_ff_0[63:48]) 		% $signed(vs1_ff_0[63:48]);
+							end
+							
+						ENABLED_8BIT_MODE :
+							begin	
+								vd_low_bus[7:0] 		= $signed(vs2_ff_0[7:0]) 		% $signed(vs1_ff_0[7:0]);
+								vd_low_bus[15:8] 	= $signed(vs2_ff_0[15:8])		% $signed(vs1_ff_0[15:8]);
+								vd_low_bus[23:16] 	= $signed(vs2_ff_0[23:16]) 		% $signed(vs1_ff_0[23:16]);
+								vd_low_bus[31:24] 	= $signed(vs2_ff_0[31:24]) 		% $signed(vs1_ff_0[31:24]);
+								vd_low_bus[39:32] 	= $signed(vs2_ff_0[39:32]) 		% $signed(vs1_ff_0[39:32]);
+								vd_low_bus[47:40] 	= $signed(vs2_ff_0[47:40]) 		% $signed(vs1_ff_0[47:40]);
+								vd_low_bus[55:48] 	= $signed(vs2_ff_0[55:48]) 		% $signed(vs1_ff_0[55:48]);
+								vd_low_bus[63:56] 	= $signed(vs2_ff_0[63:56]) 		% $signed(vs1_ff_0[63:56]);
+							end
+					endcase
+					
+				default :
+					begin
+						vd_low_bus = '0;
+					end
+			endcase
+		
+		else										// Deliver the division.
+			case (execution_vector_ff_0.sign_mode)
+				ENABLED_UNSIGNED_UNSIGNED_MODE 	:
+					case (execution_vector_ff_0.bit_mode)
+						ENABLED_64BIT_MODE :
+							begin
+								vd_low_bus 			= $unsigned(vs2_ff_0) 			/ $unsigned(vs1_ff_0);
+							end
+							
+						ENABLED_32BIT_MODE :
+							begin
+								vd_low_bus[31:0] 	= $unsigned(vs2_ff_0[31:0]) 	/ $unsigned(vs1_ff_0[31:0]);
+								vd_low_bus[63:32] 	= $unsigned(vs2_ff_0[63:32]) 	/ $unsigned(vs1_ff_0[63:32]);
+							end
+							
+						ENABLED_16BIT_MODE :
+							begin
+								vd_low_bus[15:0] 	= $unsigned(vs2_ff_0[15:0]) 	/ $unsigned(vs1_ff_0[15:0]);
+								vd_low_bus[31:16] 	= $unsigned(vs2_ff_0[31:16]) 	/ $unsigned(vs1_ff_0[31:16]);
+								vd_low_bus[47:32] 	= $unsigned(vs2_ff_0[47:32]) 	/ $unsigned(vs1_ff_0[47:32]);
+								vd_low_bus[63:48] 	= $unsigned(vs2_ff_0[63:48]) 	/ $unsigned(vs1_ff_0[63:48]);
+							end
+							
+						ENABLED_8BIT_MODE :
+							begin	
+								vd_low_bus[7:0] 		= $unsigned(vs2_ff_0[7:0]) 		/ $unsigned(vs1_ff_0[7:0]);
+								vd_low_bus[15:8] 	= $unsigned(vs2_ff_0[15:8])		/ $unsigned(vs1_ff_0[15:8]);
+								vd_low_bus[23:16] 	= $unsigned(vs2_ff_0[23:16]) 	/ $unsigned(vs1_ff_0[23:16]);
+								vd_low_bus[31:24] 	= $unsigned(vs2_ff_0[31:24]) 	/ $unsigned(vs1_ff_0[31:24]);
+								vd_low_bus[39:32] 	= $unsigned(vs2_ff_0[39:32]) 	/ $unsigned(vs1_ff_0[39:32]);
+								vd_low_bus[47:40] 	= $unsigned(vs2_ff_0[47:40]) 	/ $unsigned(vs1_ff_0[47:40]);
+								vd_low_bus[55:48] 	= $unsigned(vs2_ff_0[55:48]) 	/ $unsigned(vs1_ff_0[55:48]);
+								vd_low_bus[63:56] 	= $unsigned(vs2_ff_0[63:56]) 	/ $unsigned(vs1_ff_0[63:56]);
+							end
+					endcase
+					
+				ENABLED_SIGNED_SIGNED_MODE 	:
+					case (execution_vector_ff_0.bit_mode)
+						ENABLED_64BIT_MODE :
+							begin
+								vd_low_bus 			= $signed(vs2_ff_0) 			/ $signed(vs1_ff_0);
+							end
+							
+						ENABLED_32BIT_MODE :
+							begin
+								vd_low_bus[31:0] 	= $signed(vs2_ff_0[31:0]) 		/ $signed(vs1_ff_0[31:0]);
+								vd_low_bus[63:32] 	= $signed(vs2_ff_0[63:32]) 		/ $signed(vs1_ff_0[63:32]);
+							end
+							
+						ENABLED_16BIT_MODE :
+							begin
+								vd_low_bus[15:0] 	= $signed(vs2_ff_0[15:0]) 		/ $signed(vs1_ff_0[15:0]);
+								vd_low_bus[31:16] 	= $signed(vs2_ff_0[31:16]) 		/ $signed(vs1_ff_0[31:16]);
+								vd_low_bus[47:32] 	= $signed(vs2_ff_0[47:32]) 		/ $signed(vs1_ff_0[47:32]);
+								vd_low_bus[63:48] 	= $signed(vs2_ff_0[63:48]) 		/ $signed(vs1_ff_0[63:48]);
+							end
+							
+						ENABLED_8BIT_MODE :
+							begin	
+								vd_low_bus[7:0] 		= $signed(vs2_ff_0[7:0]) 		/ $signed(vs1_ff_0[7:0]);
+								vd_low_bus[15:8] 	= $signed(vs2_ff_0[15:8])		/ $signed(vs1_ff_0[15:8]);
+								vd_low_bus[23:16] 	= $signed(vs2_ff_0[23:16]) 		/ $signed(vs1_ff_0[23:16]);
+								vd_low_bus[31:24] 	= $signed(vs2_ff_0[31:24]) 		/ $signed(vs1_ff_0[31:24]);
+								vd_low_bus[39:32] 	= $signed(vs2_ff_0[39:32]) 		/ $signed(vs1_ff_0[39:32]);
+								vd_low_bus[47:40] 	= $signed(vs2_ff_0[47:40]) 		/ $signed(vs1_ff_0[47:40]);
+								vd_low_bus[55:48] 	= $signed(vs2_ff_0[55:48]) 		/ $signed(vs1_ff_0[55:48]);
+								vd_low_bus[63:56] 	= $signed(vs2_ff_0[63:56]) 		/ $signed(vs1_ff_0[63:56]);
+							end
+					endcase
+					
+				default :
+					begin
+						vd_low_bus = '0;
+					end
+			endcase
+	
+endmodule 

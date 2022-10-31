@@ -1,0 +1,27 @@
+interface functional_unit_interface 
+(
+	input logic 				clock, 
+	input logic 				reset_n
+//	input execution_vector_t 	execution_vector
+);
+
+	// Common inputs.
+	logic [63:0] 	v0;
+	logic [63:0] 	vs2;
+	logic [63:0] 	vs1;
+	logic [63:0] 	vd;
+
+	// Common outputs.
+	logic [63:0] 	vd_low;
+	logic [63:0] 	vd_high;
+	logic [383:0] 	vd_extra;
+	
+	modport single_width_dual_operand_masked
+	(
+		input 	vs2,
+		input 	vs1,
+		
+		output 	vd_low
+	);
+	
+endinterface : functional_unit_interface

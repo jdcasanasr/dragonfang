@@ -1,0 +1,43 @@
+module vector_register_read_freq
+
+import 	dragonfang_pkg 	:: *,
+		riscv_v_pkg 	:: *;
+
+(
+	input 	logic						clock,
+	input 	logic						reset_n,
+	input 	register_read_vector_t 		register_read_vector,
+	
+	input 	data_packet_t 				write_back_packet,
+	
+	input 	logic [TAG_LENGTH - 1:0]	v0_address,
+	input 	logic [TAG_LENGTH - 1:0]	vs1_address,
+	input 	logic [TAG_LENGTH - 1:0]	vs2_address,
+	input 	logic [TAG_LENGTH - 1:0] 	vd_address,
+
+	output 	data_packet_t 				v0_packet,
+	output 	data_packet_t 				vs1_packet,
+	output 	data_packet_t 				vs2_packet,
+	output 	data_packet_t 				vd_packet
+);
+
+	vector_register_read vector_register_read
+	(
+		.clock 					(),
+		.reset_n 				(),
+		.register_read_vector 	(),
+		
+		.write_back_packet 		(),
+		
+		.v0_address 			(),
+		.vs1_address 			(),
+		.vs2_address 			(),
+		.vd_address 			(),
+		
+		.v0_packet 				(),
+		.vs1_packet				(),
+		.vs2_packet 			(),
+		.vd_packet 				()
+	);
+
+endmodule 

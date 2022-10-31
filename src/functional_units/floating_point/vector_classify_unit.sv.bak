@@ -1,0 +1,64 @@
+module vector_classify_unit 
+
+	import 	dragonfang_pkg::*,
+			dragonfang_floating_point_pkg::*,
+			ieee_754_2019_pkg::*;
+
+(
+	input 	logic 				clock,
+	input 	logic 				reset_n,
+	input 	execution_vector_t 	execution_vector,
+	
+	input 	logic [63:0] 		vs2,
+	
+	
+	output 	logic [63:0] 		vd_low
+);
+
+	execution_vector_t 	execution_vector_ff_0;
+	logic [63:0] 		vs2_ff_0;
+	
+	logic [63:0] 		vd_low_bus;
+	
+	float_t [1:0]		vs2_float;
+	double_t			vs2_double;
+	
+	always_ff @ (posedge clock, negedge reset_n)
+		if (!reset_n)
+			begin
+				execution_vector_ff_0 	<= '0;
+				vs2_ff_0 				<= '0;
+				
+				vd_low 					<= '0;
+			end
+			
+		else
+			begin
+				execution_vector_ff_0 	<= execution_vector;
+				vs2_ff_0 				<= vs2;
+				
+				vd_low 					<= vd_low_bus;
+			end
+	
+	always_comb
+		begin
+			vs2_float[0] 	= pack_to_float(vs2_ff_0[31:0]);
+			vs2_float[1] 	= pack_to_float(vs2_ff_0[63:32]);
+			
+			vs2_double 		= pack_to_double(vs2_ff_0);
+		end
+		
+	always_comb
+		case (execution_vector_ff_0.bit_mode)
+			ENABLED_64BIT_MODE 	: vd_low_bus = {{54{1'b0}}, classify_double(vs2_double)};
+			
+			ENABLED_32BIT_MODE 	:
+				begin
+					vd_low_bus[31:0] 	= {{22{1'b0}}, classify_float(vs2_float[0])};
+					vd_low_bus[63:32] 	= {{22{1'b0}}, classify_float(vs2_float[1])};
+				end
+			
+			default 			: vd_low_bus = '0;
+		endcase
+		
+endmodule 
